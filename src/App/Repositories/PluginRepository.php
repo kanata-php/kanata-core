@@ -109,10 +109,11 @@ class PluginRepository implements Repository
 
         try {
             $record = Plugin::getInstance()->find((int)$id);
-        } catch (LazerException|TypeError $e) {
+        } catch (LazerException $e) {
             // there is a known TypeError during initialization.
             return false;
         }
+        
         return $record->update($data);
     }
 
