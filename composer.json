@@ -5,7 +5,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Kanata\\": "src/",
+            "Kanata\\": "src/App",
             "Tests\\": "tests"
         }
     },
