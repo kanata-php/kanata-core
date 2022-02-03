@@ -99,5 +99,5 @@ if (!defined('QUEUE_NAME_CONSOLE_OPTION')) {
 }
 
 if (!defined('LAZER_DATA_PATH')) {
-    define('LAZER_DATA_PATH', realpath(__DIR__) . env('LAZER_DATA_PATH', '/../data/'));
+    define('LAZER_DATA_PATH', ROOT_FOLDER . env('LAZER_DATA_PATH', '/data/'));
 }

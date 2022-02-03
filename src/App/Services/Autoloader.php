@@ -14,10 +14,7 @@ class Autoloader
 
     public static function startConstants(): void
     {
-        if (!file_exists(ROOT_FOLDER . '/src/constants.php')){
-            copy(ROOT_FOLDER . '/vendor/kanata-php/kanata-core/src/constants.php', __DIR__ . '/src/constants.php');
-        }
-        include_once ROOT_FOLDER . '/src/constants.php';
+        include_once __DIR__ . '/../../constants.php';
     }
 
     public static function startHelpers(): void
