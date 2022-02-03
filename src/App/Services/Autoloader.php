@@ -22,10 +22,7 @@ class Autoloader
 
     public static function startHelpers(): void
     {
-        if (!file_exists(ROOT_FOLDER . '/src/helpers.php')){
-            copy(ROOT_FOLDER . '/vendor/kanata-php/kanata-core/src/constants.php', __DIR__ . '/src/helpers.php');
-        }
-        include_once ROOT_FOLDER . '/src/helpers.php';
+        include_once __DIR__ . '/../../helpers.php';
     }
 
     public static function startPlugins(): void
