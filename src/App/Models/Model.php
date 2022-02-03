@@ -5,7 +5,6 @@ namespace Kanata\Models;
 use ArrayAccess;
 use Lazer\Classes\Database;
 use Lazer\Classes\LazerException;
-use TypeError;
 
 abstract class Model extends Database implements ArrayAccess
 {
@@ -85,7 +84,7 @@ abstract class Model extends Database implements ArrayAccess
                 $record->setField($key, $value);
             }
             $record->save();
-        } catch (LazerException|TypeError $e) {
+        } catch (LazerException $e) {
             return null;
         }
 
