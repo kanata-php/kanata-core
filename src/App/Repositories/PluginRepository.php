@@ -79,7 +79,7 @@ class PluginRepository implements Repository
             return $record;
         }
 
-        if ($record->count() > 0) {
+        if (null !== $record && $record->count() > 0) {
             $record->delete();
         }
 
