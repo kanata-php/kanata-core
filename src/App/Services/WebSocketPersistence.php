@@ -14,7 +14,7 @@ class WebSocketPersistence implements PersistenceInterface
     public function connect(int $fd, string $channel): void
     {
         $this->disconnect($fd);
-        WsChannel::getInstance()->create([
+        WsChannel::getInstance()->createRecord([
             'fd' => $fd,
             'channel' => $channel,
         ]);

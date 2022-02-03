@@ -4,6 +4,7 @@ namespace Kanata\Services;
 
 use Ilex\SwoolePsr7\SwooleServerRequestConverter;
 use Ilex\SwoolePsr7\SwooleResponseConverter;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use Slim\App;
 use Swoole\Http\Server;
 use Swoole\Http\Request;
@@ -21,7 +22,9 @@ class Servers
 
     public static function start(): void
     {
-        global $app, $argv, $psr17Factory;
+        global $app, $argv;
+
+        $psr17Factory = new Psr17Factory();
 
         $requestConverter = new SwooleServerRequestConverter($psr17Factory, $psr17Factory, $psr17Factory, $psr17Factory);
 

@@ -9,7 +9,7 @@ class WebSocketCommunication implements WebSocketCommunicationInterface
 {
     public function set(string $action, string $data): void
     {
-        WsCommunication::getInstance()->create([
+        WsCommunication::getInstance()->createRecord([
             'action' => $action,
             'data' => $data,
         ]);

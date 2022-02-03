@@ -3,7 +3,6 @@
 namespace Kanata\Services;
 
 use Dotenv\Dotenv;
-use Swoole\Exception;
 
 class Autoloader
 {
