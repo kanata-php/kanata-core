@@ -1,6 +1,6 @@
 <?php
 
-if (!defined('APP_NAME')) {
+if (!defined('ROOT_FOLDER')) {
     define('ROOT_FOLDER', '');
 }
 
