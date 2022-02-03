@@ -4,7 +4,6 @@ namespace Kanata\Services;
 
 use Ilex\SwoolePsr7\SwooleServerRequestConverter;
 use Ilex\SwoolePsr7\SwooleResponseConverter;
-use Ilex\SwoolePsr7\SwooleServerRequestConverter;
 use Slim\App;
 use Swoole\Http\Server;
 use Swoole\Http\Request;
@@ -16,7 +15,6 @@ use Conveyor\SocketHandlers\SocketMessageRouter;
 use Psr\Container\ContainerInterface;
 use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server as WebSocketServer;
-use voku\helper\Hooks;
 
 class Servers
 {
