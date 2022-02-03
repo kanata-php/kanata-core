@@ -11,6 +11,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Required;
 use Symfony\Component\Validator\Constraints\Type;
 use Lazer\Classes\Database as Lazer;
+use TypeError;
 
 class PluginRepository implements Repository
 {
@@ -104,7 +105,8 @@ class PluginRepository implements Repository
 
         try {
             $record = Plugin::getInstance()->find((int)$id);
-        } catch (LazerException $e) {
+        } catch (LazerException|TypeError $e) {
+            // there is a known TypeError during initialization.
             return false;
         }
         return $record->update($data);
