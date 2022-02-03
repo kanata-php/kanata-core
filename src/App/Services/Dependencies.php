@@ -45,7 +45,7 @@ class Dependencies
          */
 
         $container['filesystem'] = function ($c) {
-            $adapter = new Local(__DIR__ . '/../');
+            $adapter = new Local(ROOT_FOLDER);
             return new Flysystem($adapter);
         };
 

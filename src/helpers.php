@@ -281,9 +281,7 @@ if (! function_exists('base_path')) {
      */
     function base_path(): string
     {
-        $path = str_replace('src/App/Helpers', '', __DIR__);
-        $path = str_replace('src', '', $path);
-        return trailingslashit($path);
+        return ROOT_FOLDER;
     }
 }
 
