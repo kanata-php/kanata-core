@@ -65,8 +65,12 @@ class PluginRepository implements Repository
             return null;
         }
 
-        /** @var Plugin $record */
-        $record = Plugin::getInstance()->where('directory_name', '=', $data['directory_name'])->find();
+        try {
+            $record = Plugin::getInstance()->where('directory_name', '=', $data['directory_name'])->find();
+        } catch (LazerException|TypeError $e) {
+            // there is a known TypeError during initialization.
+            $record = null;
+        }
 
         if (
             null !== $record
