@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "35987b8c8ce85bdc80d676aeb3ab4234",
+    "content-hash": "75afcba63ffe5e88d533d4a24672b8b1",
     "packages": [
         {
             "name": "aura/autoload",
@@ -961,17 +961,17 @@
             "time": "2021-10-06T17:43:30+00:00"
         },
         {
-            "name": "ilexn/swoole-convent-psr7",
-            "version": "0.4.0",
+            "name": "ilexn/swoole-convert-psr7",
+            "version": "0.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/iLexN/swoole-psr7.git",
-                "reference": "72becff2dc41733ef14c58036bddb48e4ccd992b"
+                "reference": "9a69575821a11bf94697813dd3b1c6f0b69e83d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/iLexN/swoole-psr7/zipball/72becff2dc41733ef14c58036bddb48e4ccd992b",
-                "reference": "72becff2dc41733ef14c58036bddb48e4ccd992b",
+                "url": "https://api.github.com/repos/iLexN/swoole-psr7/zipball/9a69575821a11bf94697813dd3b1c6f0b69e83d4",
+                "reference": "9a69575821a11bf94697813dd3b1c6f0b69e83d4",
                 "shasum": ""
             },
             "require": {
@@ -981,7 +981,6 @@
             "require-dev": {
                 "eaglewu/swoole-ide-helper": "dev-master",
                 "nyholm/psr7": "^1.4",
-                "phpspec/prophecy-phpunit": "^2.0",
                 "phpstan/phpstan": "^1.2",
                 "phpstan/phpstan-phpunit": "^1.0",
                 "phpstan/phpstan-strict-rules": "^1.1",
@@ -1013,7 +1012,7 @@
             "description": "convert swoole to psr7 request response",
             "support": {
                 "issues": "https://github.com/iLexN/swoole-psr7/issues",
-                "source": "https://github.com/iLexN/swoole-psr7/tree/0.4.0"
+                "source": "https://github.com/iLexN/swoole-psr7/tree/0.5.0"
             },
             "funding": [
                 {
@@ -1021,8 +1020,7 @@
                     "type": "github"
                 }
             ],
-            "abandoned": "ilexn/swoole-convert-psr7",
-            "time": "2021-12-03T05:23:19+00:00"
+            "time": "2021-12-03T08:32:46+00:00"
         },
         {
             "name": "illuminate/collections",
