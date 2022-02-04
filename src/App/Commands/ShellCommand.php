@@ -14,7 +14,7 @@ class ShellCommand extends Command
 {
     use InfoTrait, LogoTrait;
 
-    protected static $defaultName = 'info';
+    protected static $defaultName = 'shell';
 
     protected function configure(): void
     {
