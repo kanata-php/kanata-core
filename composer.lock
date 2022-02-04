@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f3fc0afb5d8ba8958093231ec7ceddd7",
+    "content-hash": "35987b8c8ce85bdc80d676aeb3ab4234",
     "packages": [
         {
             "name": "aura/autoload",
@@ -962,34 +962,37 @@
         },
         {
             "name": "ilexn/swoole-convent-psr7",
-            "version": "0.3.0",
+            "version": "0.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/iLexN/swoole-psr7.git",
-                "reference": "5d12b7a62c71347c8fbe582631707306db867435"
+                "reference": "72becff2dc41733ef14c58036bddb48e4ccd992b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/iLexN/swoole-psr7/zipball/5d12b7a62c71347c8fbe582631707306db867435",
-                "reference": "5d12b7a62c71347c8fbe582631707306db867435",
+                "url": "https://api.github.com/repos/iLexN/swoole-psr7/zipball/72becff2dc41733ef14c58036bddb48e4ccd992b",
+                "reference": "72becff2dc41733ef14c58036bddb48e4ccd992b",
                 "shasum": ""
             },
             "require": {
                 "dflydev/fig-cookies": "^3.0",
-                "ext-swoole": ">=4.4.6",
-                "php": ">=8.0"
+                "php": ">=8.1"
             },
             "require-dev": {
                 "eaglewu/swoole-ide-helper": "dev-master",
                 "nyholm/psr7": "^1.4",
                 "phpspec/prophecy-phpunit": "^2.0",
-                "phpstan/phpstan": "^0.12.90",
-                "phpstan/phpstan-phpunit": "^0.12.20",
-                "phpstan/phpstan-strict-rules": "^0.12.9",
+                "phpstan/phpstan": "^1.2",
+                "phpstan/phpstan-phpunit": "^1.0",
+                "phpstan/phpstan-strict-rules": "^1.1",
                 "phpunit/phpunit": "^9.5",
-                "rector/rector": "^0.11.27",
-                "roave/security-advisories": "dev-master",
-                "symfony/var-dumper": "^5.3"
+                "rector/rector": "^0.12.5",
+                "roave/security-advisories": "dev-latest",
+                "symfony/var-dumper": "^6.0"
+            },
+            "suggest": {
+                "ext-openswoole": "This package requires at least one of Open Swoole or Swoole",
+                "ext-swoole": "This package requires at least one of Open Swoole or Swoole"
             },
             "type": "library",
             "autoload": {
@@ -1010,10 +1013,16 @@
             "description": "convert swoole to psr7 request response",
             "support": {
                 "issues": "https://github.com/iLexN/swoole-psr7/issues",
-                "source": "https://github.com/iLexN/swoole-psr7/tree/0.3.0"
+                "source": "https://github.com/iLexN/swoole-psr7/tree/0.4.0"
             },
+            "funding": [
+                {
+                    "url": "https://github.com/iLexN",
+                    "type": "github"
+                }
+            ],
             "abandoned": "ilexn/swoole-convert-psr7",
-            "time": "2021-07-02T02:41:23+00:00"
+            "time": "2021-12-03T05:23:19+00:00"
         },
         {
             "name": "illuminate/collections",
