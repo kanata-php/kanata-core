@@ -31,7 +31,7 @@
         "nesbot/carbon": "^2.48",
         "wikimedia/composer-merge-plugin": "^2.0",
         "league/plates": "^3.4",
-        "ilexn/swoole-convent-psr7": "^0.4",
+        "ilexn/swoole-convert-psr7": "^0.5",
         "nyholm/psr7": "^1.4",
         "php-di/slim-bridge": "^3.2",
         "php-di/php-di": "^6.3",
