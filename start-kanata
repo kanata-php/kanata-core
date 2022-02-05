@@ -4,11 +4,13 @@
 foreach ([
     __DIR__ . '/../../autoload.php',
     __DIR__ . '/../autoload.php',
+    __DIR__ . '/../../vendor/autoload.php',
     __DIR__ . '/../vendor/autoload.php',
     __DIR__ . '/vendor/autoload.php'
  ] as $file) {
     if (file_exists($file)) {
         define('PHPUNIT_COMPOSER_INSTALL', $file);
+        break;
     }
 }
 
@@ -33,6 +35,7 @@ foreach ([
     realpath(__DIR__) . '/data/',
     realpath(__DIR__) . '/../data/',
     realpath(__DIR__) . '/../../data/',
+    realpath(__DIR__) . '/../../../data/',
  ] as $file) {
     if (file_exists($file)) {
         define('LAZER_DATA_PATH', $file);
@@ -43,9 +46,8 @@ foreach ([
 if (!defined('LAZER_DATA_PATH')) {
     fwrite(
         STDERR,
-        'You need to set up the project dependencies using Composer:' . PHP_EOL . PHP_EOL .
-        '    composer install' . PHP_EOL . PHP_EOL .
-        'You can learn all about Composer on https://getcomposer.org/.' . PHP_EOL
+        'The data directory couldn\'t be found.' . PHP_EOL .
+        'Make sure it is present at the root directory of your application.' . PHP_EOL
     );
     die(1);
 }
