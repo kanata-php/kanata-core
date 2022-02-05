@@ -7,10 +7,10 @@ use Kanata\Commands\ShellCommand;
 use Slim\App;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Kanata\Commands\ActivatePluginCommand;
+use Kanata\Commands\DeactivatePluginCommand;
 use Kanata\Commands\DebuggerCommand;
 use Kanata\Commands\InfoCommand;
 use Kanata\Commands\CreatePluginCommand;
-use Kanata\Commands\InitCommand;
 use Symfony\Component\Console\Application;
 use voku\helper\Hooks;
 
