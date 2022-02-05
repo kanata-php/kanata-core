@@ -2,6 +2,7 @@
 
 namespace Kanata\Commands;
 
+use Exception;
 use Kanata\Commands\Traits\LogoTrait;
 use Kanata\Models\Plugin;
 use Symfony\Component\Console\Command\Command;
@@ -37,14 +38,14 @@ class DeactivatePluginCommand extends Command
 
         $pluginName = $input->getArgument('plugin-name');
 
-        $plugin = Plugin::getInstance()->where('directory_name', '=', $pluginName)->find();
-
-        if ($plugin->count() === 0) {
-            $io->error('Plugin ' . $pluginName . ' was not found!');
+        try {
+            $result = deactivate_plugin($pluginName);
+        } catch (Exception $e) {
+            $io->error($e->getMessage());
             return Command::FAILURE;
         }
 
-        if (!$plugin->update(['active' => false])) {
+        if (!$result) {
             $io->error('There was an error while trying to activate Plugin ' . $pluginName . '.');
             return Command::FAILURE;
         }

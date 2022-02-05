@@ -1,5 +1,6 @@
 <?php
 
+use Kanata\Models\Plugin;
 use Kanata\Services\WebSocketCommunication;
 use Kanata\Services\WebSocketPersistence;
 use Monolog\Logger;
@@ -12,6 +13,20 @@ use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use voku\helper\Hooks;
 use League\Flysystem\Filesystem;
+
+/**
+ * Summary:
+ *
+ * 1. Generic Helpers
+ * 2. Execution Context Information
+ * 3. Path Helpers
+ * 4. View
+ * 5. String
+ * 6. Queues
+ * 7. WebSockets
+ * 8. Plugins
+ *
+ */
 
 // ------------------------------------------------------------------------
 // Generic Helpers
@@ -490,5 +505,96 @@ if (! function_exists('socket_persistence')) {
     function socket_persistence(): WebSocketPersistence
     {
         return container()->socket_persistence;
+    }
+}
+
+// ------------------------------------------------------------------------
+// Plugins
+// ------------------------------------------------------------------------
+
+if (! function_exists('get_plugins')) {
+    /**
+     * Get list of plugins.
+     *
+     * @return array
+     */
+    function get_plugins(): array {
+        return Plugin::getInstance()->findAll()->asArray();
+    }
+}
+
+if (! function_exists('get_active_plugins')) {
+    /**
+     * Get list of active plugins.
+     *
+     * @return array
+     */
+    function get_active_plugins(): array {
+        return Plugin::getInstance()->where('active', '=', true)->findAll()->asArray();
+    }
+}
+
+if (! function_exists('get_deactivated_plugins')) {
+    /**
+     * Get list of deactivated plugins.
+     *
+     * @return array
+     */
+    function get_deactivated_plugins(): array {
+        return Plugin::getInstance()->where('active', '=', false)->findAll()->asArray();
+    }
+}
+
+if (! function_exists('get_plugin')) {
+    /**
+     * Get list of deactivated plugins.
+     *
+     * @param string $name
+     * @return array|null
+     */
+    function get_plugin(string $name): null|array {
+        $plugin = Plugin::getInstance()->where('name', '=', $name)->find();
+
+        if ($plugin->count() === 0) {
+            return null;
+        }
+
+        return $plugin->asArray();
+    }
+}
+
+if (! function_exists('deactivate_plugin')) {
+    /**
+     * Activate a plugin.
+     *
+     * @param string $name
+     * @return bool
+     */
+    function deactivate_plugin(string $name): bool {
+        $plugin = Plugin::getInstance()->where('name', '=', $name)->find();
+
+        if ($plugin === null) {
+            throw new Exception('Plugin not found');
+        }
+
+        return $plugin->update(['active' => false]);
+    }
+}
+
+if (! function_exists('activate_plugin')) {
+    /**
+     * Deactivate a plugin.
+     *
+     * @param string $name
+     * @return bool
+     */
+    function activate_plugin(string $name): bool {
+        $plugin = Plugin::getInstance()->where('name', '=', $name)->find();
+
+        if ($plugin->count() === 0) {
+            throw new Exception('Plugin not found');
+        }
+
+        return $plugin->update(['active' => true]);
     }
 }

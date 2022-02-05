@@ -29,7 +29,6 @@ class Bootstrap
         Autoloader::startHelpers();
 
         $application = new Application();
-
         try {
             self::processCore();
         } catch (Exception $e) {
