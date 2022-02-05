@@ -49,7 +49,7 @@ class DeactivatePluginCommand extends Command
             return Command::FAILURE;
         }
 
-        $io->success('Plugin ' . $pluginName . ' activated!');
+        $io->success('Plugin ' . $pluginName . ' deactivated!');
         return Command::SUCCESS;
     }
 }
