@@ -37,11 +37,11 @@ class Bootstrap
             return;
         }
 
-        $application->add(new InitCommand());
         $application->add(new InfoCommand());
         $application->add(new DebuggerCommand());
         $application->add(new CreatePluginCommand());
         $application->add(new ActivatePluginCommand());
+        $application->add(new DeactivatePluginCommand());
         $application->add(new ShellCommand());
 
         /**
