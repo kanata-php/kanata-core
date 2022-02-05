@@ -39,7 +39,7 @@ class DeactivatePluginCommand extends Command
 
         $plugin = Plugin::getInstance()->where('directory_name', '=', $pluginName)->find();
 
-        if (null === $plugin) {
+        if ($plugin->count() === 0) {
             $io->error('Plugin ' . $pluginName . ' was not found!');
             return Command::FAILURE;
         }
