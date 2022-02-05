@@ -37,9 +37,17 @@ foreach ([
     if (file_exists($file)) {
         define('LAZER_DATA_PATH', $file);
         break;
-    } else {
-        exit('Error: "data" directory doesn\'t exist!');
     }
+}
+
+if (!defined('LAZER_DATA_PATH')) {
+    fwrite(
+        STDERR,
+        'You need to set up the project dependencies using Composer:' . PHP_EOL . PHP_EOL .
+        '    composer install' . PHP_EOL . PHP_EOL .
+        'You can learn all about Composer on https://getcomposer.org/.' . PHP_EOL
+    );
+    die(1);
 }
 
 // -----------------------------------------------------
