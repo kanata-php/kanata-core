@@ -163,11 +163,17 @@ class Servers
          * Important: don't forget to register the option as a new supervisor service for each extra queue added through
          * this hook. The `option` parameter here is the option passed to the command there.
          *
-         * Command on supervisor: /usr/bin/php /var/www/html/index.php --queue --example-option
+         * Command on supervisor: /usr/bin/php /var/www/html/index.php --queue --queue-name=example-option
          *
          * Format:
          *     [
-         *         ['queue' => 'queue-name', 'option' => '--example-option', 'callback' => Callable],
+         *         [
+         *             'queue' => 'queue-name', 
+         *             'exchange' => 'example-exchange',
+         *             'routing-key' => 'example-routing-key',
+         *             'option' => 'example-option',
+         *             'callback' => Callable,
+         *         ],
          *         ...
          *     ]
          */

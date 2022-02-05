@@ -16,15 +16,15 @@ class ActivatePluginCommand extends Command
 {
     use LogoTrait;
 
-    protected static $defaultName = 'plugin:activate';
+    protected static $defaultName = 'plugin:deactivate';
 
     protected function configure(): void
     {
         $this
-            ->setHelp('This command activates a plugin.')
+            ->setHelp('This command deactivates a plugin.')
             ->setDefinition(
                 new InputDefinition([
-                    new InputArgument('plugin-name', InputArgument::REQUIRED, 'Which plugin to activate.'),
+                    new InputArgument('plugin-name', InputArgument::REQUIRED, 'Which plugin to deactivate.'),
                 ])
             );
     }
@@ -44,7 +44,7 @@ class ActivatePluginCommand extends Command
             return Command::FAILURE;
         }
 
-        if (!$plugin->update(['active' => true])) {
+        if (!$plugin->update(['active' => false])) {
             $io->error('There was an error while trying to activate Plugin ' . $pluginName . '.');
             return Command::FAILURE;
         }
