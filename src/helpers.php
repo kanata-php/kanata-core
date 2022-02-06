@@ -114,7 +114,10 @@ if (! function_exists('json_response')) {
             $data = $overrideData;
         }
 
-        return $response->withJson($data, $statusCode);
+        $factory = new Psr17Factory();
+        $steam = $factory->createStream(json_encode($data));
+
+        return $response->withBody($steam)->withStatus($statusCode)->withHeader('Content-Type', 'application/json');
     }
 }
 
