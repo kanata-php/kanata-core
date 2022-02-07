@@ -230,7 +230,6 @@ class Servers
             Request $swooleRequest, Response $swooleResponse
         ) use ($app, $requestConverter) {
             $psr7Request = $requestConverter->createFromSwoole($swooleRequest);
-            $psr7Request->getBody()->rewind();
             $psr7Response = $app->handle($psr7Request);
             $converter = new SwooleResponseConverter($swooleResponse);
             $converter->send($psr7Response);
