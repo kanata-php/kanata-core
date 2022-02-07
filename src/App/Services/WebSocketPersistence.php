@@ -27,12 +27,18 @@ class WebSocketPersistence implements PersistenceInterface
 
     public function getAllConnections(): array
     {
-        return WsChannel::getInstance()->findAll()->asArray();
+        $channels = WsChannel::getInstance()->findAll()->asArray();
+
+        if (empty($channels)) {
+            return [];
+        }
+
+        return array_map(fn ($item) => $item['channel'], $channels);
     }
 
     public function listen(int $fd, string $action): void
     {
-        WsListener::getInstance()->create([
+        WsListener::getInstance()->createRecord([
             'fd' => $fd,
             'action' => $action,
         ]);
