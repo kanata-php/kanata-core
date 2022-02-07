@@ -33,7 +33,12 @@ class WebSocketPersistence implements PersistenceInterface
             return [];
         }
 
-        return array_map(fn ($item) => $item['channel'], $channels);
+        $connections = [];
+        foreach ($channels as $channel) {
+            $connections[$channel['fd']] = $channel['channel'];
+        }
+
+        return $connections;
     }
 
     public function listen(int $fd, string $action): void
