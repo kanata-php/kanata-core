@@ -202,6 +202,18 @@ if (! function_exists('add_filter')) {
     }
 }
 
+if (! function_exists('add_action')) {
+    /**
+     * @param string $hook
+     * @param $callback
+     * @return void
+     */
+    function add_action(string $hook, $callback): void
+    {
+        Hooks::getInstance()->add_action($hook, $callback);
+    }
+}
+
 if (!function_exists('array_get')) {
     /**
      * Get an item from an array using "dot" notation.

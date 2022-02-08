@@ -120,6 +120,15 @@ class Servers
         });
 
         $websocket->on('close', function ($server, $fd) {
+
+            /**
+             * Action: ws_close
+             * Description: Execute an action during connection close event.
+             *
+             * @param int $fd
+             */
+            Hooks::getInstance()->do_action('ws_close', $fd);
+
             echo "WS Close: " . $fd . PHP_EOL;
         });
 

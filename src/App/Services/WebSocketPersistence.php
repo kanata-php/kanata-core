@@ -51,7 +51,24 @@ class WebSocketPersistence implements PersistenceInterface
 
     public function getListener(int $fd): array
     {
-        return WsListener::getInstance()->where('fd', '=', $fd)->asArray();
+        $listeners =  WsListener::getInstance()->findAll()->asArray();
+
+        if (empty($listeners)) {
+            return [];
+        }
+
+        $listenersArray = [];
+        foreach ($listeners as $listener) {
+            if (!isset($listenersArray[$listener['fd']])) {
+                $listenersArray[$listener['fd']] = [];
+            }
+
+            if (!in_array($listener['action'], $listenersArray[$listener['fd']])) {
+                $listenersArray[$listener['fd']][] = $listener['action'];
+            }
+        }
+
+        return $listenersArray;
     }
 
     /**
