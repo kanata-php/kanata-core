@@ -2,6 +2,8 @@
 
 namespace Kanata\Services;
 
+use Error;
+use Exception;
 use Kanata\Models\Plugin;
 use Kanata\Repositories\PluginRepository;
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -75,7 +77,11 @@ class PluginLoader
         });
 
         foreach($remaining as $item) {
-            Plugin::getInstance()->where('id', '=', $item)->find()->delete();
+            try {
+                Plugin::getInstance()->where('id', '=', $item)->find()->delete();
+            } catch (Exception|Error $e) {
+                // --
+            }
         }
     }
 
