@@ -6,6 +6,8 @@ use Kanata\Models\WsChannel;
 use Kanata\Models\WsListener;
 use Kanata\Services\Traits\SQLiteTrait;
 use Conveyor\SocketHandlers\Interfaces\PersistenceInterface;
+use Exception;
+use Error;
 
 class WebSocketPersistence implements PersistenceInterface
 {
@@ -14,20 +16,32 @@ class WebSocketPersistence implements PersistenceInterface
     public function connect(int $fd, string $channel): void
     {
         $this->disconnect($fd);
-        WsChannel::getInstance()->createRecord([
-            'fd' => $fd,
-            'channel' => $channel,
-        ]);
+        try {
+            WsChannel::getInstance()->createRecord([
+                'fd' => $fd,
+                'channel' => $channel,
+            ]);
+        } catch(Exception|Error $e) {
+            // --
+        }
     }
 
     public function disconnect(int $fd): void
     {
-        WsChannel::getInstance()->where('fd', '=', $fd)->delete();
+        try {
+            WsChannel::getInstance()->where('fd', '=', $fd)->delete();
+        } catch (Exception|Error $e) {
+            // --
+        }
     }
 
     public function getAllConnections(): array
     {
-        $channels = WsChannel::getInstance()->findAll()->asArray();
+        try {
+            $channels = WsChannel::getInstance()->findAll()->asArray();
+        } catch (Exception|Error $e) {
+            return [];
+        }
 
         if (empty($channels)) {
             return [];
@@ -43,15 +57,31 @@ class WebSocketPersistence implements PersistenceInterface
 
     public function listen(int $fd, string $action): void
     {
-        WsListener::getInstance()->createRecord([
-            'fd' => $fd,
-            'action' => $action,
-        ]);
+        try {
+            WsListener::getInstance()->createRecord([
+                'fd' => $fd,
+                'action' => $action,
+            ]);
+        } catch (Exception|Error $e) {
+            // --
+        }
     }
 
     public function getListener(int $fd): array
     {
-        $listeners =  WsListener::getInstance()->findAll()->asArray();
+        return WsListener::getInstance()->where('fd', '=', $fd)->asArray();
+    }
+
+    /**
+     * @return array Format: [fd => [listener1, listener2, ...]]
+     */
+    public function getAllListeners(): array
+    {
+        try {
+            $listeners = WsListener::getInstance()->findAll()->asArray();
+        } catch (Exception|Error $e) {
+            return [];
+        }
 
         if (empty($listeners)) {
             return [];
@@ -71,24 +101,24 @@ class WebSocketPersistence implements PersistenceInterface
         return $listenersArray;
     }
 
-    /**
-     * @return array Format: [fd => [listener1, listener2, ...]]
-     */
-    public function getAllListeners(): array
-    {
-        return WsListener::getInstance()->findAll()->asArray();
-    }
-
     public function stopListener(int $fd, string $action)
     {
-        return WsListener::getInstance()
-            ->where('fd', '=', $fd)
-            ->where('action', '=', $action)
-            ->delete();
+        try {
+            return WsListener::getInstance()
+                ->where('fd', '=', $fd)
+                ->where('action', '=', $action)
+                ->delete();
+        } catch (Exception|Error $e) {
+            // --
+        }
     }
 
     public function cleanListeners()
     {
-        return WsListener::getInstance()->findAll()->delete();
+        try {
+            return WsListener::getInstance()->findAll()->delete();
+        } catch (Exception|Error $e) {
+            // --
+        }
     }
 }
