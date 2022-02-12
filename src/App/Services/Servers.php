@@ -2,6 +2,8 @@
 
 namespace Kanata\Services;
 
+use Error;
+use Exception;
 use Ilex\SwoolePsr7\SwooleServerRequestConverter;
 use Ilex\SwoolePsr7\SwooleResponseConverter;
 use Nyholm\Psr7\Factory\Psr17Factory;
@@ -79,7 +81,27 @@ class Servers
                         $connections[] = $key;
                     }
                 } else {
-                    $connections = $server->connections;
+                    $connections = [];
+                    foreach ($server->connections as $item) {
+                        $connections[] = $item;
+                    }
+                }
+
+                /**
+                 * Action: tick_connections_broadcast
+                 * Description: Filter connections.
+                 * Expected return: array $content
+                 * @param SocketHandlerInterface $socketRouter
+                 * @param array                  $content
+                 */
+                try {
+                    $connections = Hooks::getInstance()->apply_filters(
+                        'tick_connections_broadcast',
+                        $connections,
+                        $content
+                    );
+                } catch (Exception|Error $e) {
+                    logger()->error('There was an error while trying to filter ticker broadcast. Error: ' . $e->getMessage());
                 }
 
                 foreach ($connections as $fd) {
