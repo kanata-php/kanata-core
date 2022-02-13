@@ -10,8 +10,11 @@ abstract class Model extends Database implements ArrayAccess
 {
     public array $errors = [];
 
+    const TABLE_NAME = '';
+
     public function __construct()
     {
+        $this->name = self::TABLE_NAME;
         $this->setFields();
         $this->setPending();
     }

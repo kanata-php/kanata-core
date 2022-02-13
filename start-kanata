@@ -104,3 +104,14 @@ try {
         'data' => 'string',
     ]);
 }
+
+// ws associations
+$wsassociations_table = 'wsassociations';
+try {
+    Validate::table($wsassociations_table)->exists();
+} catch (LazerException $e) {
+    Lazer::create($wsassociations_table, [
+        'fd' => 'integer',
+        'user_id' => 'integer',
+    ]);
+}
