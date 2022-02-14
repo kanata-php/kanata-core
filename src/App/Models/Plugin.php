@@ -7,13 +7,9 @@ use function Symfony\Component\String\u;
 class Plugin extends Model
 {
     const TABLE_NAME = 'plugins';
-    protected string $database = self::TABLE_NAME;
 
-    public function __construct()
-    {
-        $this->name = self::TABLE_NAME;
-        parent::__construct();
-    }
+    /** @var string */
+    protected $name = self::TABLE_NAME;
 
     public function getClassName(): string
     {
