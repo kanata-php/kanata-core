@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7464d4f8d3c5877792a6917a703de2da",
+    "content-hash": "14bd6e2c68eaeb3b8944c584b719fa6f",
     "packages": [
         {
             "name": "aura/autoload",
@@ -681,12 +681,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "GuzzleHttp\\": "src/"
-                },
                 "files": [
                     "src/functions_include.php"
-                ]
+                ],
+                "psr-4": {
+                    "GuzzleHttp\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -1359,16 +1359,16 @@
         },
         {
             "name": "kanata-php/socket-conveyor",
-            "version": "1.0.4",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kanata-php/socket-conveyor.git",
-                "reference": "4861bef96306eb6ff9b5cd866d4870a6d2a58979"
+                "reference": "ef594323b75ec8515073102b9dc92989d24a05fe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kanata-php/socket-conveyor/zipball/4861bef96306eb6ff9b5cd866d4870a6d2a58979",
-                "reference": "4861bef96306eb6ff9b5cd866d4870a6d2a58979",
+                "url": "https://api.github.com/repos/kanata-php/socket-conveyor/zipball/ef594323b75ec8515073102b9dc92989d24a05fe",
+                "reference": "ef594323b75ec8515073102b9dc92989d24a05fe",
                 "shasum": ""
             },
             "require": {
@@ -1398,9 +1398,15 @@
             "description": "A WebSocket/Socket message Router",
             "support": {
                 "issues": "https://github.com/kanata-php/socket-conveyor/issues",
-                "source": "https://github.com/kanata-php/socket-conveyor/tree/1.0.4"
+                "source": "https://github.com/kanata-php/socket-conveyor/tree/1.1.0"
             },
-            "time": "2022-01-31T02:54:20+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/kanata-php",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-02-13T21:13:55+00:00"
         },
         {
             "name": "koriym/attributes",
@@ -4250,12 +4256,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Mbstring\\": ""
-                },
                 "files": [
                     "bootstrap.php"
-                ]
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Mbstring\\": ""
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
