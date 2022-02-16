@@ -24,5 +24,14 @@ class WebSocketCommunication implements WebSocketCommunicationInterface
     {
         WsCommunication::getInstance()->where('action', '=', $action)->delete();
     }
+
+    public function delete(int $id): bool
+    {
+        if (WsCommunication::getInstance()->where('id', '=', $id)->delete()) {
+            return true;
+        }
+
+        return false;
+    }
 }
 

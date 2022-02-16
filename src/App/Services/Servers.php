@@ -64,49 +64,51 @@ class Servers
             }
 
             $server->tick((int) WS_TICK_INTERVAL, function () use ($server, $communications, $persistence) {
-                $data = $communications->get(WS_MESSAGE_ACTION);
-                if (count($data) === 0) {
+                $dataList = $communications->get(WS_MESSAGE_ACTION);
+                if (count($dataList) === 0) {
                     return;
                 }
 
-                $data = current($data);
                 $communications->clean(WS_MESSAGE_ACTION);
-                $content = json_decode($data['data'], true);
-                if (isset($content['channel'])) {
-                    $connections = [];
-                    foreach ($persistence->getAllConnections() as $key => $item) {
-                        if ($item !== $content['channel']) {
-                            continue;
+                foreach ($dataList as $data) {
+                    $communications->delete($data['id']);
+                    $content = json_decode($data['data'], true);
+                    if (isset($content['channel'])) {
+                        $connections = [];
+                        foreach ($persistence->getAllConnections() as $key => $item) {
+                            if ($item !== $content['channel']) {
+                                continue;
+                            }
+                            $connections[] = $key;
                         }
-                        $connections[] = $key;
+                    } else {
+                        $connections = [];
+                        foreach ($server->connections as $item) {
+                            $connections[] = $item;
+                        }
                     }
-                } else {
-                    $connections = [];
-                    foreach ($server->connections as $item) {
-                        $connections[] = $item;
+
+                    /**
+                     * Action: tick_connections_broadcast
+                     * Description: Filter connections.
+                     * Expected return: array $content
+                     * @param SocketHandlerInterface $socketRouter
+                     * @param array $content
+                     */
+                    try {
+                        $connections = Hooks::getInstance()->apply_filters(
+                            'tick_connections_broadcast',
+                            $connections,
+                            $content
+                        );
+                    } catch (Exception|Error $e) {
+                        logger()->error('There was an error while trying to filter ticker broadcast. Error: ' . $e->getMessage());
                     }
-                }
 
-                /**
-                 * Action: tick_connections_broadcast
-                 * Description: Filter connections.
-                 * Expected return: array $content
-                 * @param SocketHandlerInterface $socketRouter
-                 * @param array                  $content
-                 */
-                try {
-                    $connections = Hooks::getInstance()->apply_filters(
-                        'tick_connections_broadcast',
-                        $connections,
-                        $content
-                    );
-                } catch (Exception|Error $e) {
-                    logger()->error('There was an error while trying to filter ticker broadcast. Error: ' . $e->getMessage());
-                }
-
-                foreach ($connections as $fd) {
-                    if (!$server->push($fd, json_encode($data))) {
-                        $persistence->disconnect($fd);
+                    foreach ($connections as $fd) {
+                        if (!$server->push($fd, json_encode($data))) {
+                            $persistence->disconnect($fd);
+                        }
                     }
                 }
             });
