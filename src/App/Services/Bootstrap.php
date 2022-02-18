@@ -54,6 +54,13 @@ class Bootstrap
         $application->run();
     }
 
+    public static function bootstrapTinkerwell(): void
+    {
+        Autoloader::startConstants();
+        Autoloader::startHelpers();
+        self::processCore();
+    }
+
     private static function processCore(): void
     {
         global $app, $container;

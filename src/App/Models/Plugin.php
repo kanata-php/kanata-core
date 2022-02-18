@@ -2,7 +2,7 @@
 
 namespace Kanata\Models;
 
-use function Symfony\Component\String\u;
+use function Stringy\create as s;
 
 class Plugin extends Model
 {
@@ -13,7 +13,7 @@ class Plugin extends Model
 
     public function getClassName(): string
     {
-        return ucfirst((string) u($this->directory_name)->camel());
+        return ucfirst((string) s($this->directory_name)->camelize());
     }
 
     /**
