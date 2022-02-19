@@ -29,15 +29,15 @@ trait AssociationsPersistence
     }
 
     /**
-     * Disassociate a user from a fd.
+     * Disassociate a user from a userId.
      *
-     * @param int $fd
+     * @param int $userId
      * @return void
      */
-    public function disassoc(int $fd): void
+    public function disassoc(int $userId): void
     {
         try {
-            WsAssociation::getInstance()->where('fd', '=', $fd)->delete();
+            WsAssociation::getInstance()->where('user_id', '=', $userId)->delete();
         } catch (Exception|Error $e) {
             // --
         }
