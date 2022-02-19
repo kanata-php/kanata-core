@@ -17,7 +17,7 @@ trait AssociationsPersistence
      */
     public function assoc(int $fd, int $userId): void
     {
-        $this->disassoc($fd);
+        $this->disassoc($userId);
         try {
             WsAssociation::getInstance()->createRecord([
                 'fd' => $fd,
