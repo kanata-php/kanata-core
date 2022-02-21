@@ -54,7 +54,7 @@ trait ListenersPersistence
         return $listenersArray;
     }
 
-    public function stopListener(int $fd, string $action)
+    public function stopListener(int $fd, string $action): bool
     {
         try {
             return WsListener::getInstance()
@@ -64,14 +64,18 @@ trait ListenersPersistence
         } catch (Exception|Error $e) {
             // --
         }
+
+        return false;
     }
 
-    public function cleanListeners()
+    public function cleanListeners(): bool
     {
         try {
             return WsListener::getInstance()->findAll()->delete();
         } catch (Exception|Error $e) {
             // --
         }
+
+        return false;
     }
 }
