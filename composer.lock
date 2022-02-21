@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f3c9e0896a7525ba3ac6e5f9f2aabf45",
+    "content-hash": "ac322e7b2a8bbd5139f42a32ba6030e6",
     "packages": [
         {
             "name": "aura/autoload",
@@ -1419,7 +1419,7 @@
         },
         {
             "name": "kanata-php/socket-conveyor",
-            "version": "dev-master",
+            "version": "1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kanata-php/socket-conveyor.git",
@@ -1441,7 +1441,6 @@
                 "phpunit/phpunit": "^9.2",
                 "symfony/var-dumper": "^5.1"
             },
-            "default-branch": true,
             "bin": [
                 "start-ws-server"
             ],
@@ -1459,7 +1458,7 @@
             "description": "A WebSocket/Socket message Router",
             "support": {
                 "issues": "https://github.com/kanata-php/socket-conveyor/issues",
-                "source": "https://github.com/kanata-php/socket-conveyor/tree/master"
+                "source": "https://github.com/kanata-php/socket-conveyor/tree/1.1.2"
             },
             "funding": [
                 {
@@ -7846,7 +7845,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "kanata-php/socket-conveyor": 20,
         "psy/psysh": 0
     },
     "prefer-stable": false,

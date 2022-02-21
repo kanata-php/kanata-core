@@ -17,7 +17,7 @@
         "guzzlehttp/guzzle": "^7.3",
         "symfony/validator": "^6.0",
         "league/pipeline": "^1.0",
-        "kanata-php/socket-conveyor": "dev-master",
+        "kanata-php/socket-conveyor": "^1.1",
         "voku/php-hooks": "^0.2",
         "dflydev/fig-cookies": "^3.0",
         "doctrine/annotations": "^1.13",
