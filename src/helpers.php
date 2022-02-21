@@ -385,7 +385,7 @@ if (! function_exists('plugin_path')) {
             return null;
         }
 
-        return $plugin_path;
+        return trailingslashit($plugin_path);
     }
 }
 
