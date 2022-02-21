@@ -373,7 +373,9 @@ if (! function_exists('plugin_path')) {
      */
     function plugin_path(?string $pluginDirectoryName = null): ?string
     {
-        $path = base_path() . 'content/plugins';
+        $partial_path = 'content/plugins';
+
+        $path = base_path() . $partial_path;
 
         if (null === $pluginDirectoryName) {
             return $path;
@@ -381,7 +383,7 @@ if (! function_exists('plugin_path')) {
 
         $plugin_path = trailingslashit($path) . $pluginDirectoryName;
 
-        if (!container()->filesystem->has($plugin_path)) {
+        if (!container()->filesystem->has($partial_path)) {
             return null;
         }
 
