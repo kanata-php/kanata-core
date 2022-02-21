@@ -68,6 +68,19 @@ trait ListenersPersistence
         return false;
     }
 
+    public function stopListenersForFd(int $fd): bool
+    {
+        try {
+            return WsListener::getInstance()
+                ->where('fd', '=', $fd)
+                ->delete();
+        } catch (Exception|Error $e) {
+            // --
+        }
+
+        return false;
+    }
+
     public function cleanListeners(): bool
     {
         try {
