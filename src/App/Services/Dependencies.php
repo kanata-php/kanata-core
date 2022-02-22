@@ -3,6 +3,7 @@
 namespace Kanata\Services;
 
 use Doctrine\Common\Cache\FilesystemCache;
+use Kanata\Repositories\PluginRepository;
 use League\Flysystem\Adapter\Local;
 use League\Plates\Engine;
 use Monolog\Handler\StreamHandler;
@@ -78,6 +79,15 @@ class Dependencies
                 new WebSocketCommunication(),
                 container()
             );
+        };
+
+        $container['plugin_persistence'] = function ($c) {
+            /**
+             * Here we set the PluginRepository implementation.
+             *
+             * Interface: \Kanata\Repositories\Interfaces\Repositories
+             */
+            return new PluginRepository;
         };
 
         /**

@@ -2,6 +2,7 @@
 
 namespace Kanata\Repositories;
 
+use Error;
 use Kanata\Models\Plugin;
 use Kanata\Models\Traits\Validation;
 use Kanata\Repositories\Interfaces\Repository;
@@ -21,6 +22,45 @@ class PluginRepository implements Repository
     public array $defaultValues = [
         'active' => false,
     ];
+
+    public static function all(): array
+    {
+        return Plugin::all()->asArray();
+    }
+
+    public static function get(array $params): array
+    {
+        $searching = false;
+
+        if (!empty($params)) {
+            $plugins = Plugin::getInstance();
+        }
+
+        if (isset($params['name'])) {
+            $searching = true;
+            $plugins = $plugins->where('name', '=', $params['name']);
+        }
+
+        if (isset($params['active'])) {
+            $searching = true;
+            $plugins = $plugins->where('active', '=', true);
+        }
+
+        if ($searching) {
+            return $plugins->findAll()->asArray();
+        }
+
+        return [];
+    }
+
+    public static function delete(int $id)
+    {
+        try {
+            Plugin::getInstance()->where('id', '=', $id)->find()->delete();
+        } catch (Exception|Error $e) {
+            // --
+        }
+    }
 
     /**
      * @param string $procedure

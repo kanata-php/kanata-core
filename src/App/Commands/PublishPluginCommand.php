@@ -5,6 +5,7 @@ namespace Kanata\Commands;
 use Exception;
 use Kanata\Commands\Traits\LogoTrait;
 use Kanata\Models\Plugin;
+use Kanata\Repositories\PluginRepository;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -69,13 +70,13 @@ class PublishPluginCommand extends Command
      */
     public function publish(string $pluginName, string $directory): void
     {
-        $plugin = Plugin::getInstance()->where('name', '=', $pluginName)->find();
+        $plugin = PluginRepository::get(['name' => $pluginName]);
 
-        if ($plugin->count() === 0) {
+        if (count($plugin) === 0) {
             throw new Exception('Plugin not found');
         }
 
-        $relativePath = 'content/plugins/' . $plugin->directory_name . '/' . $directory;
+        $relativePath = 'content/plugins/' . $plugin['directory_name'] . '/' . $directory;
         $destiny = $directory . '/';
 
         if (!container()->filesystem->has($relativePath)) {

@@ -68,8 +68,8 @@ class PluginLoader
     private function unregisterIfNotFound(array $pluginsFound): void
     {
         $registeredPlugins = [];
-        foreach (Plugin::all() as $registered) {
-            $registeredPlugins[] = $registered->id;
+        foreach (PluginRepository::all() as $registered) {
+            $registeredPlugins[] = $registered['id'];
         }
 
         $remaining = array_filter($registeredPlugins, function ($item) use ($pluginsFound) {
@@ -77,11 +77,7 @@ class PluginLoader
         });
 
         foreach($remaining as $item) {
-            try {
-                Plugin::getInstance()->where('id', '=', $item)->find()->delete();
-            } catch (Exception|Error $e) {
-                // --
-            }
+            PluginRepository::delete($item);
         }
     }
 

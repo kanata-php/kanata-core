@@ -1,6 +1,7 @@
 <?php
 
 use Kanata\Models\Plugin;
+use Kanata\Repositories\PluginRepository;
 use Kanata\Services\WebSocketCommunication;
 use Kanata\Services\WebSocketPersistence;
 use Monolog\Logger;
@@ -537,7 +538,7 @@ if (! function_exists('get_plugins')) {
      * @return array
      */
     function get_plugins(): array {
-        return Plugin::getInstance()->findAll()->asArray();
+        return PluginRepository::all();
     }
 }
 
@@ -548,7 +549,7 @@ if (! function_exists('get_active_plugins')) {
      * @return array
      */
     function get_active_plugins(): array {
-        return Plugin::getInstance()->where('active', '=', true)->findAll()->asArray();
+        return PluginRepository::get(['active' => true]);
     }
 }
 
@@ -559,7 +560,7 @@ if (! function_exists('get_deactivated_plugins')) {
      * @return array
      */
     function get_deactivated_plugins(): array {
-        return Plugin::getInstance()->where('active', '=', false)->findAll()->asArray();
+        return PluginRepository::get(['active' => false]);
     }
 }
 
@@ -571,13 +572,13 @@ if (! function_exists('get_plugin')) {
      * @return array|null
      */
     function get_plugin(string $name): null|array {
-        $plugin = Plugin::getInstance()->where('name', '=', $name)->find();
+        $plugin = PluginRepository::get(['name' => $name]);
 
-        if ($plugin->count() === 0) {
+        if (count($plugin) === 0) {
             return null;
         }
 
-        return $plugin->asArray();
+        return $plugin;
     }
 }
 
@@ -589,13 +590,13 @@ if (! function_exists('deactivate_plugin')) {
      * @return bool
      */
     function deactivate_plugin(string $name): bool {
-        $plugin = Plugin::getInstance()->where('name', '=', $name)->find();
+        $plugin = PluginRepository::get(['name' => $name]);
 
-        if ($plugin === null) {
+        if (empty($plugin)) {
             throw new Exception('Plugin not found');
         }
 
-        return $plugin->update(['active' => false]);
+        return (new PluginRepository)->updatePlugin($plugin['id'], ['active' => false]);
     }
 }
 
@@ -607,12 +608,12 @@ if (! function_exists('activate_plugin')) {
      * @return bool
      */
     function activate_plugin(string $name): bool {
-        $plugin = Plugin::getInstance()->where('name', '=', $name)->find();
+        $plugin = PluginRepository::get(['name' => $name]);
 
-        if ($plugin->count() === 0) {
+        if (empty($plugin)) {
             throw new Exception('Plugin not found');
         }
 
-        return $plugin->update(['active' => true]);
+        return (new PluginRepository)->updatePlugin($plugin['id'], ['active' => true]);
     }
 }
