@@ -1,6 +1,5 @@
 <?php
 
-use Kanata\Models\Plugin;
 use Kanata\Repositories\PluginRepository;
 use Kanata\Services\WebSocketCommunication;
 use Kanata\Services\WebSocketPersistence;

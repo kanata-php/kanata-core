@@ -4,7 +4,6 @@ namespace Kanata\Commands;
 
 use Exception;
 use Kanata\Commands\Traits\LogoTrait;
-use Kanata\Models\Plugin;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;

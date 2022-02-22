@@ -88,8 +88,7 @@ abstract class Model extends Database implements ArrayAccess
             return null;
         }
 
-
-        return $record->find($record->lastId());
+        return $record->where('id', '=', $record->lastId())->find();
     }
 
     public function update(array $data): bool

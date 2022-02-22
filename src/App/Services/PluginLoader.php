@@ -2,9 +2,6 @@
 
 namespace Kanata\Services;
 
-use Error;
-use Exception;
-use Kanata\Models\Plugin;
 use Kanata\Repositories\PluginRepository;
 use Doctrine\Common\Annotations\AnnotationReader;
 use FilesystemIterator;
@@ -59,7 +56,7 @@ class PluginLoader
             $pluginPath = $info->getPathname();
             $plugin = $this->pluginRepository->registerIfNotRegistered($pluginPath);
             $this->loadPlugin($plugin);
-            $pluginsFound[] = $plugin->id;
+            $pluginsFound[] = $plugin['id'];
         }
 
         $this->unregisterIfNotFound($pluginsFound);
@@ -81,30 +78,30 @@ class PluginLoader
         }
     }
 
-    public function loadPlugin(Plugin $plugin)
+    public function loadPlugin(array $plugin)
     {
         $this->loadPluginClass($plugin);
 
-        $className = $plugin->getClassName();
+        $className = $this->pluginRepository->getClassName($plugin);
         $reflectionClass = new ReflectionClass($className);
         $this->loadPluginAnnotations($plugin, $reflectionClass);
 
-        if ($plugin->active) {
-            $this->loader->addPrefix($className, $plugin->path . '/src');
+        if ($plugin['active']) {
+            $this->loader->addPrefix($className, $plugin['path'] . '/src');
             $instance = $reflectionClass->newInstanceArgs([container()]);
             $instance->start();
         }
     }
 
-    private function loadPluginClass(Plugin $plugin): void
+    private function loadPluginClass(array $plugin): void
     {
-        $mainFile = $plugin->getMainFile();
-        $className = $plugin->getClassName();
+        $mainFile = $this->pluginRepository->getMainFile($plugin);
+        $className = $this->pluginRepository->getClassName($plugin);
 
         $this->loader->setClassFile($className, $mainFile);
     }
 
-    private function loadPluginAnnotations(Plugin &$plugin, ReflectionClass $reflectionClass): void
+    private function loadPluginAnnotations(array &$plugin, ReflectionClass $reflectionClass): void
     {
         $reader = new AnnotationReader();
         $realName = $reader->getClassAnnotation($reflectionClass, PluginAnnotation::class);
@@ -123,7 +120,7 @@ class PluginLoader
                 'author_email' => $realAuthor->email,
                 'description' => $realDescription->value,
             ];
-            $result = $this->pluginRepository->updatePlugin($plugin->id, $data);
+            $result = $this->pluginRepository->updatePlugin($plugin['id'], $data);
             if (!$result) {
                 logger()->info('There was an error while updating a plugin info: ' . implode(', ', $this->pluginRepository->errors));
             }

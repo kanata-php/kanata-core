@@ -12,6 +12,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Required;
 use Symfony\Component\Validator\Constraints\Type;
 use Lazer\Classes\Database as Lazer;
+use function Stringy\create as s;
 
 class PluginRepository implements Repository
 {
@@ -95,35 +96,34 @@ class PluginRepository implements Repository
         }
     }
 
-    public function registerPlugin(array $data)
+    public function registerPlugin(array $data): array
     {
         try {
             $this->validate('create', $data);
         } catch (Exception $e) {
             $this->errors = explode('|', $e->getMessage());
-            return null;
+            return [];
         }
 
         try {
-            $record = Plugin::getInstance()->where('directory_name', '=', $data['directory_name'])->find();
+            $record = Plugin::getInstance()->where('directory_name', '=', $data['directory_name'])->find()->asArray();
+            $record = current($record);
         } catch (LazerException $e) {
             $record = null;
         }
 
-        if (
-            null !== $record
-            && null !== $record['directory_name']
-        ) {
+        if (!empty($record) && null !== $record['directory_name']) {
             return $record;
         }
 
-        if (null !== $record && $record->count() > 0) {
-            $record->delete();
+        // here we delete in order to register again correctly
+        if (!empty($record) && count($record) > 0) {
+            self::delete($record['id']);
         }
 
         $data = $this->fillDefaults($data);
 
-        return Plugin::createRecord($data);
+        return current(Plugin::createRecord($data)->asArray());
     }
 
     public function fillDefaults(array $data): array
@@ -136,7 +136,7 @@ class PluginRepository implements Repository
         return $data;
     }
 
-    public function updatePlugin(string $id, array $data): bool
+    public function updatePlugin(int $id, array $data): bool
     {
         try {
             $this->validate('update', $data);
@@ -154,7 +154,34 @@ class PluginRepository implements Repository
         return $record->update($data);
     }
 
-    public function registerIfNotRegistered(string $pluginPath): Lazer
+    public function getClassName(array $plugin): string
+    {
+        return ucfirst((string) s($plugin['directory_name'])->camelize());
+    }
+
+    /**
+     * Plugin has a main file that has to be capital/camel case of the directory, or "index.php".
+     *
+     * @return ?string
+     */
+    public function getMainFile(array $plugin): ?string
+    {
+        $pluginPath = trailingslashit($plugin['path']);
+
+        $mainFileFullPath = $pluginPath . $this->getClassName($plugin) . '.php';
+        if (file_exists($mainFileFullPath)) {
+            return $mainFileFullPath;
+        }
+
+        $indexFileFullPath = $pluginPath . 'index.php';
+        if (file_exists($indexFileFullPath)) {
+            return $indexFileFullPath;
+        }
+
+        return null;
+    }
+
+    public function registerIfNotRegistered(string $pluginPath): array
     {
         $pluginDirectoryName = basename($pluginPath);
         $record = $this->registerPlugin([
@@ -163,8 +190,8 @@ class PluginRepository implements Repository
             'path' => $pluginPath,
         ]);
 
-        if ($record->path !== $pluginPath) {
-            $record->update([
+        if ($record['path'] !== $pluginPath) {
+            self::updatePlugin($record['id'], [
                 'path' => $pluginPath,
             ]);
         }
