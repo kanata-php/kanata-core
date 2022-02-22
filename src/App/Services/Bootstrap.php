@@ -3,6 +3,7 @@
 namespace Kanata\Services;
 
 use Exception;
+use Kanata\Commands\PublishPluginCommand;
 use Kanata\Commands\ShellCommand;
 use Slim\App;
 use Nyholm\Psr7\Factory\Psr17Factory;
@@ -42,6 +43,7 @@ class Bootstrap
         $application->add(new ActivatePluginCommand());
         $application->add(new DeactivatePluginCommand());
         $application->add(new ShellCommand());
+        $application->add(new PublishPluginCommand());
 
         /**
          * Action: commands
