@@ -26,7 +26,7 @@ use Nyholm\Psr7\Factory\Psr17Factory;
  * 6. Queues
  * 7. WebSockets
  * 8. Plugins
- *
+ * 9. Database
  */
 
 // ------------------------------------------------------------------------
@@ -615,5 +615,27 @@ if (! function_exists('activate_plugin')) {
         $plugin = current($plugin);
 
         return (new PluginRepository)->updatePlugin($plugin['id'], ['active' => true]);
+    }
+}
+
+// ------------------------------------------------------------------------
+// Database
+// ------------------------------------------------------------------------
+
+if (! function_exists('mysql_table_exists')) {
+    /**
+     * Verify if the mysql db table exists.
+     *
+     * @param string $schema
+     * @param string $table
+     * @return bool
+     */
+    function mysql_table_exists(string $schema, string $table): bool
+    {
+        $sql = 'SELECT EXISTS (SELECT TABLE_NAME FROM information_schema.TABLES '
+            .'WHERE TABLE_SCHEMA LIKE "' . $schema . '" '
+            .'AND TABLE_TYPE LIKE "BASE TABLE" '
+            .'AND TABLE_NAME = "' . $table . '" ) "exists";';
+        return container()->db->getConnection('default')->select($sql) === 1;
     }
 }
