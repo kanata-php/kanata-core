@@ -69,7 +69,7 @@ class PluginRepository implements Repository
      * @return void
      * @throws Exception
      */
-    private function validate(string $procedure, array $data)
+    private function validate(string $procedure, array $data): void
     {
         if (isset($data['name'])) {
             $this->validateField($data['name'], [new Type('string'), new NotBlank()]);

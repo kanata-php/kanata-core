@@ -98,6 +98,46 @@ if (!defined('QUEUE_NAME_CONSOLE_OPTION')) {
     define('QUEUE_NAME_CONSOLE_OPTION', 'queue-name');
 }
 
+// -----------------------------------------------------
+// JSON db
+// -----------------------------------------------------
+
 if (!defined('LAZER_DATA_PATH')) {
     define('LAZER_DATA_PATH', ROOT_FOLDER . env('LAZER_DATA_PATH', '/data/'));
+}
+
+// -----------------------------------------------------
+// MySQL db
+// -----------------------------------------------------
+
+if (!defined('DB_DRIVER')) {
+    define('DB_DRIVER', env('DB_DRIVER', 'mysql'));
+}
+
+if (!defined('DB_HOST')) {
+    define('DB_HOST', env('DB_HOST', 'localhost'));
+}
+
+if (!defined('DB_DATABASE')) {
+    define('DB_DATABASE', env('DB_DATABASE', 'kanata'));
+}
+
+if (!defined('DB_USERNAME')) {
+    define('DB_USERNAME', env('DB_USERNAME', 'root'));
+}
+
+if (!defined('DB_PASSWORD')) {
+    define('DB_PASSWORD', env('DB_PASSWORD', 'secret'));
+}
+
+if (!defined('DB_CHARSET')) {
+    define('DB_CHARSET', env('DB_CHARSET', 'utf8'));
+}
+
+if (!defined('DB_COLLATION')) {
+    define('DB_COLLATION', env('DB_COLLATION', 'utf8_unicode_ci'));
+}
+
+if (!defined('DB_PREFIX')) {
+    define('DB_PREFIX', env('DB_PREFIX', ''));
 }

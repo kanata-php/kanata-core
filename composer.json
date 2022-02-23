@@ -24,7 +24,7 @@
         "doctrine/cache": "^1.10",
         "ray/aop": "^2.10",
         "psr/cache": "^2",
-        "illuminate/database": "^8.42",
+        "illuminate/database": "^8.83",
         "vlucas/phpdotenv": "^5.3",
         "ramsey/uuid": "^4.1",
         "phpseclib/phpseclib": "~3.0",

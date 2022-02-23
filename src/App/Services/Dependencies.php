@@ -11,6 +11,7 @@ use Monolog\Logger;
 use League\Flysystem\Filesystem as Flysystem;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use voku\helper\Hooks;
+use Illuminate\Database\Capsule\Manager as Capsule;
 
 class Dependencies
 {
@@ -37,6 +38,22 @@ class Dependencies
         $container['cache'] = function ($c) {
             $cache = new FilesystemCache(storage_path() . 'cache/');
             return $cache;
+        };
+
+        $container['db'] = function () {
+            $capsule = new Capsule;
+            $capsule->addConnection([
+                'driver' => DB_DRIVER,
+                'host' => DB_HOST,
+                'database' => DB_DATABASE,
+                'username' => DB_USERNAME,
+                'password' => DB_PASSWORD,
+                'charset' => DB_CHARSET,
+                'collation' => DB_COLLATION,
+                'prefix' => DB_PREFIX,
+            ]);
+            $capsule->setAsGlobal();
+            $capsule->bootEloquent();
         };
 
         /**
