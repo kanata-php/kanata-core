@@ -3,6 +3,7 @@
 namespace Kanata\Services;
 
 use Doctrine\Common\Cache\FilesystemCache;
+use Kanata\Drivers\DbCapsule;
 use Kanata\Repositories\PluginRepository;
 use League\Flysystem\Adapter\Local;
 use League\Plates\Engine;
@@ -11,7 +12,6 @@ use Monolog\Logger;
 use League\Flysystem\Filesystem as Flysystem;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use voku\helper\Hooks;
-use Illuminate\Database\Capsule\Manager as Capsule;
 
 class Dependencies
 {
@@ -41,10 +41,11 @@ class Dependencies
         };
 
         $container['db'] = function () {
-            $capsule = new Capsule;
+            $capsule = new DbCapsule;
             $capsule->addConnection([
                 'driver' => DB_DRIVER,
                 'host' => DB_HOST,
+                'port' => DB_PORT,
                 'database' => DB_DATABASE,
                 'username' => DB_USERNAME,
                 'password' => DB_PASSWORD,
@@ -54,6 +55,7 @@ class Dependencies
             ]);
             $capsule->setAsGlobal();
             $capsule->bootEloquent();
+            return $capsule;
         };
 
         /**

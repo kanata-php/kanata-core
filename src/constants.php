@@ -118,6 +118,10 @@ if (!defined('DB_HOST')) {
     define('DB_HOST', env('DB_HOST', 'localhost'));
 }
 
+if (!defined('DB_PORT')) {
+    define('DB_PORT', env('DB_PORT', 3306));
+}
+
 if (!defined('DB_DATABASE')) {
     define('DB_DATABASE', env('DB_DATABASE', 'kanata'));
 }
