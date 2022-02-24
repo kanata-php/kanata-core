@@ -9,7 +9,7 @@ class WebSocketCommunication implements WebSocketCommunicationInterface
 {
     public function set(string $action, string $data): void
     {
-        WsCommunication::getInstance()->createRecord([
+        WsCommunication::create([
             'action' => $action,
             'data' => $data,
         ]);
@@ -17,17 +17,17 @@ class WebSocketCommunication implements WebSocketCommunicationInterface
 
     public function get(string $action): array
     {
-        return WsCommunication::getInstance()->where('action', '=', $action)->findAll()->asArray();
+        return WsCommunication::where('action', '=', $action)->first()->asArray();
     }
 
     public function clean(string $action): void
     {
-        WsCommunication::getInstance()->where('action', '=', $action)->delete();
+        WsCommunication::where('action', '=', $action)->first()->delete();
     }
 
     public function delete(int $id): bool
     {
-        if (WsCommunication::getInstance()->where('id', '=', $id)->delete()) {
+        if (WsCommunication::find($id)->delete()) {
             return true;
         }
 

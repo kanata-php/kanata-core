@@ -63,7 +63,7 @@ class Bootstrap
         self::processCore();
     }
 
-    private static function processCore(): void
+    public static function processCore(): void
     {
         global $app, $container;
 

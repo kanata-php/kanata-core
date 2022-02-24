@@ -12,7 +12,7 @@ trait ChannelsPersistence
     {
         $this->disconnect($fd);
         try {
-            WsChannel::getInstance()->createRecord([
+            WsChannel::create([
                 'fd' => $fd,
                 'channel' => $channel,
             ]);
@@ -24,7 +24,7 @@ trait ChannelsPersistence
     public function disconnect(int $fd): void
     {
         try {
-            WsChannel::getInstance()->where('fd', '=', $fd)->delete();
+            WsChannel::where('fd', '=', $fd)->first()->delete();
         } catch (Exception|Error $e) {
             // --
         }
@@ -33,7 +33,7 @@ trait ChannelsPersistence
     public function getAllConnections(): array
     {
         try {
-            $channels = WsChannel::getInstance()->findAll()->asArray();
+            $channels = WsChannel::all()->toArray();
         } catch (Exception|Error $e) {
             return [];
         }

@@ -26,7 +26,7 @@ class PluginRepository implements Repository
 
     public static function all(): array
     {
-        return Plugin::all()->asArray();
+        return Plugin::all()->toArray();
     }
 
     public static function get(array $params): array
@@ -34,7 +34,7 @@ class PluginRepository implements Repository
         $searching = false;
 
         if (!empty($params)) {
-            $plugins = Plugin::getInstance();
+            $plugins = new Plugin;
         }
 
         if (isset($params['name'])) {
@@ -48,7 +48,7 @@ class PluginRepository implements Repository
         }
 
         if ($searching) {
-            return $plugins->findAll()->asArray();
+            return $plugins->get()->toArray();
         }
 
         return [];
@@ -57,7 +57,7 @@ class PluginRepository implements Repository
     public static function delete(int $id)
     {
         try {
-            Plugin::getInstance()->where('id', '=', $id)->find()->delete();
+            Plugin::find($id)->delete();
         } catch (Exception|Error $e) {
             // --
         }
@@ -106,7 +106,7 @@ class PluginRepository implements Repository
         }
 
         try {
-            $record = Plugin::getInstance()->where('directory_name', '=', $data['directory_name'])->find()->asArray();
+            $record = Plugin::where('directory_name', '=', $data['directory_name'])->first()->asArray();
             $record = current($record);
         } catch (LazerException $e) {
             $record = null;
@@ -146,7 +146,7 @@ class PluginRepository implements Repository
         }
 
         try {
-            $record = Plugin::getInstance()->find((int)$id);
+            $record = Plugin::find((int) $id);
         } catch (LazerException $e) {
             return false;
         }

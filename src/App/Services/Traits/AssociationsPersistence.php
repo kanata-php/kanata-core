@@ -19,7 +19,7 @@ trait AssociationsPersistence
     {
         $this->disassoc($userId);
         try {
-            WsAssociation::getInstance()->createRecord([
+            WsAssociation::create([
                 'fd' => $fd,
                 'user_id' => $userId,
             ]);
@@ -37,7 +37,7 @@ trait AssociationsPersistence
     public function disassoc(int $userId): void
     {
         try {
-            WsAssociation::getInstance()->where('user_id', '=', $userId)->delete();
+            WsAssociation::where('user_id', '=', $userId)->delete();
         } catch (Exception|Error $e) {
             // --
         }
@@ -51,7 +51,7 @@ trait AssociationsPersistence
      */
     public function getAssoc(int $fd): int
     {
-        return WsAssociation::getInstance()->where('fd', '=', $fd)->find()->user_id;
+        return WsAssociation::where('fd', '=', $fd)->first()->user_id;
     }
 
     /**
@@ -62,7 +62,7 @@ trait AssociationsPersistence
     public function getAllAssocs(): array
     {
         try {
-            $associations = WsAssociation::getInstance()->findAll()->asArray();
+            $associations = WsAssociation::all()->toArray();
         } catch (Exception|Error $e) {
             return [];
         }

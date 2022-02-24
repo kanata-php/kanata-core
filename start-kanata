@@ -26,92 +26,65 @@ if (!defined('PHPUNIT_COMPOSER_INSTALL')) {
 
 require PHPUNIT_COMPOSER_INSTALL;
 
-use Lazer\Classes\Database as Lazer;
-use Lazer\Classes\Helpers\Validate;
-use Lazer\Classes\LazerException;
+use Illuminate\Database\Schema\Blueprint;
 
-
-foreach ([
-    realpath(__DIR__) . '/data/',
-    realpath(__DIR__) . '/../data/',
-    realpath(__DIR__) . '/../../data/',
-    realpath(__DIR__) . '/../../../data/',
- ] as $file) {
-    if (file_exists($file)) {
-        define('LAZER_DATA_PATH', $file);
-        break;
-    }
-}
-
-if (!defined('LAZER_DATA_PATH')) {
-    fwrite(
-        STDERR,
-        'The data directory couldn\'t be found.' . PHP_EOL .
-        'Make sure it is present at the root directory of your application.' . PHP_EOL
-    );
-    die(1);
-}
+define('ROOT_FOLDER', __DIR__ . '/../../');
+\Kanata\Services\Bootstrap::processCore();
 
 // -----------------------------------------------------
 // prepare json dbs
 // -----------------------------------------------------
 
-// plugins
-$plugins_table = 'plugins';
-try {
-    Validate::table($plugins_table)->exists();
-} catch (LazerException $e) {
-    Lazer::create($plugins_table, [
-        'active' => 'boolean',
-        'directory_name' => 'string',
-        'path' => 'string',
-        'name' => 'string',
-        'author_name' => 'string',
-        'author_email' => 'string',
-        'description' => 'string',
-    ]);
+if (!mysql_table_exists(DB_DATABASE, \Kanata\Models\Plugin::TABLE_NAME)) {
+    container()->db->schema()->create(\Kanata\Models\Plugin::TABLE_NAME, function (Blueprint $table) {
+        $table->increments('id');
+        $table->boolean('active');
+        $table->string('directory_name');
+        $table->string('path');
+        $table->string('name');
+        $table->string('author_name');
+        $table->string('author_email');
+        $table->string('description');
+        $table->timestamps();
+    });
 }
 
 // ws channels
-$wschannels_table = 'wschannels';
-try {
-    Validate::table($wschannels_table)->exists();
-} catch (LazerException $e) {
-    Lazer::create($wschannels_table, [
-        'fd' => 'integer',
-        'channel' => 'string',
-    ]);
+if (!mysql_table_exists(DB_DATABASE, \Kanata\Models\WsChannel::TABLE_NAME)) {
+    container()->db->schema()->create(\Kanata\Models\WsChannel::TABLE_NAME, function (Blueprint $table) {
+        $table->increments('id');
+        $table->integer('fd');
+        $table->string('channel');
+        $table->timestamps();
+    });
 }
 
 // ws listeners
-$wslisteners_table = 'wslisteners';
-try {
-    Validate::table($wslisteners_table)->exists();
-} catch (LazerException $e) {
-    Lazer::create($wslisteners_table, [
-        'fd' => 'integer',
-        'action' => 'string',
-    ]);
+if (!mysql_table_exists(DB_DATABASE, \Kanata\Models\WsListener::TABLE_NAME)) {
+    container()->db->schema()->create(\Kanata\Models\WsListener::TABLE_NAME, function (Blueprint $table) {
+        $table->increments('id');
+        $table->integer('fd');
+        $table->string('action');
+        $table->timestamps();
+    });
 }
 
 // ws communications
-$wscommunications_table = 'wscommunications';
-try {
-    Validate::table($wscommunications_table)->exists();
-} catch (LazerException $e) {
-    Lazer::create($wscommunications_table, [
-        'action' => 'string',
-        'data' => 'string',
-    ]);
+if (!mysql_table_exists(DB_DATABASE, \Kanata\Models\WsCommunication::TABLE_NAME)) {
+    container()->db->schema()->create(\Kanata\Models\WsCommunication::TABLE_NAME, function (Blueprint $table) {
+        $table->increments('id');
+        $table->string('action');
+        $table->string('data');
+        $table->timestamps();
+    });
 }
 
 // ws associations
-$wsassociations_table = 'wsassociations';
-try {
-    Validate::table($wsassociations_table)->exists();
-} catch (LazerException $e) {
-    Lazer::create($wsassociations_table, [
-        'fd' => 'integer',
-        'user_id' => 'integer',
-    ]);
+if (!mysql_table_exists(DB_DATABASE, \Kanata\Models\WsAssociation::TABLE_NAME)) {
+    container()->db->schema()->create(\Kanata\Models\WsAssociation::TABLE_NAME, function (Blueprint $table) {
+        $table->increments('id');
+        $table->integer('fd');
+        $table->integer('user_id');
+        $table->timestamps();
+    });
 }

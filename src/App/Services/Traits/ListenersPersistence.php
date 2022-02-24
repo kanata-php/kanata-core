@@ -11,7 +11,7 @@ trait ListenersPersistence
     public function listen(int $fd, string $action): void
     {
         try {
-            WsListener::getInstance()->createRecord([
+            WsListener::create([
                 'fd' => $fd,
                 'action' => $action,
             ]);
@@ -22,7 +22,7 @@ trait ListenersPersistence
 
     public function getListener(int $fd): array
     {
-        return WsListener::getInstance()->where('fd', '=', $fd)->asArray();
+        return WsListener::where('fd', '=', $fd)->first()->toArray();
     }
 
     /**
@@ -31,7 +31,7 @@ trait ListenersPersistence
     public function getAllListeners(): array
     {
         try {
-            $listeners = WsListener::getInstance()->findAll()->asArray();
+            $listeners = WsListener::all()->toArray();
         } catch (Exception|Error $e) {
             return [];
         }
@@ -57,9 +57,9 @@ trait ListenersPersistence
     public function stopListener(int $fd, string $action): bool
     {
         try {
-            return WsListener::getInstance()
-                ->where('fd', '=', $fd)
+            return WsListener::where('fd', '=', $fd)
                 ->where('action', '=', $action)
+                ->first()
                 ->delete();
         } catch (Exception|Error $e) {
             // --
@@ -71,8 +71,8 @@ trait ListenersPersistence
     public function stopListenersForFd(int $fd): bool
     {
         try {
-            return WsListener::getInstance()
-                ->where('fd', '=', $fd)
+            return WsListener::where('fd', '=', $fd)
+                ->first()
                 ->delete();
         } catch (Exception|Error $e) {
             // --
@@ -84,7 +84,7 @@ trait ListenersPersistence
     public function cleanListeners(): bool
     {
         try {
-            return WsListener::getInstance()->findAll()->delete();
+            return WsListener::all()->delete();
         } catch (Exception|Error $e) {
             // --
         }
