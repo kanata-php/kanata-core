@@ -76,7 +76,7 @@ if (!mysql_table_exists(DB_DATABASE, \Kanata\Models\WsCommunication::TABLE_NAME)
     container()->db->schema()->create(\Kanata\Models\WsCommunication::TABLE_NAME, function (Blueprint $table) {
         $table->increments('id');
         $table->string('action');
-        $table->string('data');
+        $table->longText('data');
         $table->timestamps();
     });
 }
