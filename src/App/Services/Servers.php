@@ -65,7 +65,7 @@ class Servers
 
             $server->tick((int) WS_TICK_INTERVAL, function () use ($server, $communications, $persistence) {
                 $dataList = $communications->get(WS_MESSAGE_ACTION);
-                if (null === $dataList) {
+                if (empty($dataList)) {
                     return;
                 }
 

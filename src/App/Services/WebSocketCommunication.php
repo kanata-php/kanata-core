@@ -17,17 +17,17 @@ class WebSocketCommunication implements WebSocketCommunicationInterface
 
     public function get(string $action): null|array
     {
-        return WsCommunication::where('action', '=', $action)->first()?->toArray();
+        return WsCommunication::where('action', '=', $action)->get()?->toArray();
     }
 
     public function clean(string $action): void
     {
-        WsCommunication::where('action', '=', $action)->first()->delete();
+        WsCommunication::where('action', '=', $action)->delete();
     }
 
     public function delete(int $id): bool
     {
-        if (WsCommunication::find($id)->delete()) {
+        if (WsCommunication::find($id)?->delete()) {
             return true;
         }
 
