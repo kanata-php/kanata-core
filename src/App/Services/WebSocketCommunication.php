@@ -15,9 +15,9 @@ class WebSocketCommunication implements WebSocketCommunicationInterface
         ]);
     }
 
-    public function get(string $action): array
+    public function get(string $action): null|array
     {
-        return WsCommunication::where('action', '=', $action)->first()->asArray();
+        return WsCommunication::where('action', '=', $action)->first()?->toArray();
     }
 
     public function clean(string $action): void

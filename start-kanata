@@ -29,22 +29,24 @@ require PHPUNIT_COMPOSER_INSTALL;
 use Illuminate\Database\Schema\Blueprint;
 
 define('ROOT_FOLDER', __DIR__ . '/../../');
-\Kanata\Services\Bootstrap::processCore();
+\Kanata\Services\Bootstrap::processCore(['skip_plugins' => true]);
 
 // -----------------------------------------------------
 // prepare json dbs
 // -----------------------------------------------------
 
+// plugins
 if (!mysql_table_exists(DB_DATABASE, \Kanata\Models\Plugin::TABLE_NAME)) {
+    dd(mysql_table_exists(DB_DATABASE, \Kanata\Models\Plugin::TABLE_NAME));
     container()->db->schema()->create(\Kanata\Models\Plugin::TABLE_NAME, function (Blueprint $table) {
         $table->increments('id');
         $table->boolean('active');
         $table->string('directory_name');
         $table->string('path');
         $table->string('name');
-        $table->string('author_name');
-        $table->string('author_email');
-        $table->string('description');
+        $table->string('author_name')->nullable();
+        $table->string('author_email')->nullable();
+        $table->string('description')->nullable();
         $table->timestamps();
     });
 }

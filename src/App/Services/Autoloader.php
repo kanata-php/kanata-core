@@ -24,8 +24,10 @@ class Autoloader
 
     public static function startPlugins(): void
     {
+        $connection = container()->db;
         $pluginLoader = new PluginLoader(container());
         $pluginLoader->load();
         unset($pluginLoader); // clear some memory.
+        $connection->closeConnection();
     }
 }

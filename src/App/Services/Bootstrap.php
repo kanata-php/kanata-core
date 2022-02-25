@@ -63,7 +63,7 @@ class Bootstrap
         self::processCore();
     }
 
-    public static function processCore(): void
+    public static function processCore(array $args = []): void
     {
         global $app, $container;
 
@@ -77,6 +77,9 @@ class Bootstrap
         Console::start();
         Dependencies::start();
         Config::start();
-        Autoloader::startPlugins();
+
+        if (!isset($args['skip_plugins'])) {
+            Autoloader::startPlugins();
+        }
     }
 }

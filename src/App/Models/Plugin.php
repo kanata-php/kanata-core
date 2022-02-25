@@ -12,4 +12,14 @@ class Plugin extends Model
     /** @var string */
     protected $name = self::TABLE_NAME;
     protected $table = self::TABLE_NAME;
+
+    protected $fillable = [
+        'active',
+        'directory_name',
+        'path',
+        'name',
+        'author_name',
+        'author_email',
+        'description',
+    ];
 }

@@ -636,6 +636,7 @@ if (! function_exists('mysql_table_exists')) {
             .'WHERE TABLE_SCHEMA LIKE "' . $schema . '" '
             .'AND TABLE_TYPE LIKE "BASE TABLE" '
             .'AND TABLE_NAME = "' . $table . '" ) "exists";';
-        return container()->db->getConnection('default')->select($sql) === 1;
+        $results = container()->db->getConnection('default')->select($sql);
+        return isset($results[0]) && $results[0]?->exists === 1;
     }
 }

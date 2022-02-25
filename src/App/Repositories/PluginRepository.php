@@ -105,25 +105,20 @@ class PluginRepository implements Repository
             return [];
         }
 
-        try {
-            $record = Plugin::where('directory_name', '=', $data['directory_name'])->first()->asArray();
-            $record = current($record);
-        } catch (LazerException $e) {
-            $record = null;
-        }
+        $record = Plugin::where('directory_name', '=', $data['directory_name'])->first()?->toArray();
 
-        if (!empty($record) && null !== $record['directory_name']) {
+        if (null !== $record && null !== $record['directory_name']) {
             return $record;
         }
 
         // here we delete in order to register again correctly
-        if (!empty($record) && count($record) > 0) {
+        if (null !== $record) {
             self::delete($record['id']);
         }
 
         $data = $this->fillDefaults($data);
 
-        return current(Plugin::createRecord($data)->asArray());
+        return Plugin::create($data)->toArray();
     }
 
     public function fillDefaults(array $data): array
