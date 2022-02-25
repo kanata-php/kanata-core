@@ -13,4 +13,9 @@ class WsChannel extends Model
     protected $table = self::TABLE_NAME;
 
     protected array $defaults = [];
+
+    protected $fillable = [
+        'fd',
+        'channel',
+    ];
 }

@@ -26,9 +26,6 @@ class Bootstrap
 
     public static function startConsole(): void
     {
-        Autoloader::startConstants();
-        Autoloader::startHelpers();
-
         $application = new Application();
         try {
             self::processCore();

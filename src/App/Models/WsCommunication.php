@@ -11,4 +11,9 @@ class WsCommunication extends Model
     /** @var string */
     protected $name = self::TABLE_NAME;
     protected $table = self::TABLE_NAME;
+
+    protected $fillable = [
+        'action',
+        'data',
+    ];
 }
