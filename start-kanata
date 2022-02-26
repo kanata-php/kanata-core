@@ -40,7 +40,6 @@ define('ROOT_FOLDER', __DIR__ . '/../../../');
 
 // plugins
 if (!mysql_table_exists(DB_DATABASE, \Kanata\Models\Plugin::TABLE_NAME)) {
-    dd(mysql_table_exists(DB_DATABASE, \Kanata\Models\Plugin::TABLE_NAME));
     container()->db->schema()->create(\Kanata\Models\Plugin::TABLE_NAME, function (Blueprint $table) {
         $table->increments('id');
         $table->boolean('active');
