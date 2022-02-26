@@ -28,7 +28,10 @@ require PHPUNIT_COMPOSER_INSTALL;
 
 use Illuminate\Database\Schema\Blueprint;
 
-define('ROOT_FOLDER', __DIR__ . '/../../');
+define('ROOT_FOLDER', __DIR__ . '/../../../');
+\Kanata\Services\Autoloader::startEnv();
+\Kanata\Services\Autoloader::startConstants();
+\Kanata\Services\Autoloader::startHelpers();
 \Kanata\Services\Bootstrap::processCore(['skip_plugins' => true]);
 
 // -----------------------------------------------------
