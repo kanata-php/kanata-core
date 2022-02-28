@@ -156,6 +156,17 @@ class Servers
             echo "WS Close: " . $fd . PHP_EOL;
         });
 
+        /**
+         * Action: websocket_settings
+         * Description: Important for WebSocket custom or overwritten behaviors.
+         * Expected return: WebSocketServer
+         * @param WebSocketServer $websocket
+         */
+        $websocket = Hooks::getInstance()->apply_filters(
+            'websocket_settings',
+            $websocket
+        );
+
         $websocket->start();
     }
 
