@@ -279,6 +279,17 @@ class Servers
             $converter->send($psr7Response);
         });
 
+        /**
+         * Action: http_settings
+         * Description: Important for Http custom or overwritten behaviors.
+         * Expected return: Server
+         * @param Server $server
+         */
+        $server = Hooks::getInstance()->apply_filters(
+            'http_settings',
+            $server
+        );
+
         $server->start();
     }
 }
