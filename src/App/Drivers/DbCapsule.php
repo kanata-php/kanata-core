@@ -8,6 +8,7 @@ class DbCapsule extends Manager
 {
     public function closeConnection($name = 'default')
     {
-        $this->container['config']['database.connections'][$name] = null;
+        $conn = $this->getConnection($name);
+        $conn->disconnect();
     }
 }
