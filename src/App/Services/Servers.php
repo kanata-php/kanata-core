@@ -52,7 +52,42 @@ class Servers
 
         $port = get_input()->getOption(WEBSOCKET_PORT_PARAM);
 
-        $websocket = new WebSocketServer(WS_SERVER_HOST, $port);
+        /**
+         * Action: websocket_mode
+         * Description: Important for WebSocket server mode.
+         * Expected return: string
+         * @param string $server_mode
+         */
+        $server_mode = Hooks::getInstance()->apply_filters(
+            'websocket_mode',
+            SWOOLE_BASE
+        );
+
+        /**
+         * Action: websocket_sock_type
+         * Description: Important for WebSocket server socket type.
+         * Expected return: string
+         * @param array $server_sock_type
+         */
+        $server_sock_type = Hooks::getInstance()->apply_filters(
+            'websocket_sock_type',
+            SWOOLE_BASE
+        );
+
+        $websocket = new WebSocketServer(WS_SERVER_HOST, $port, $server_mode, $server_sock_type);
+
+        /**
+         * Action: websocket_settings
+         * Description: Important for Http custom settings.
+         * Expected return: array
+         * @param array $server_settings
+         */
+        $server_settings = Hooks::getInstance()->apply_filters(
+            'websocket_settings',
+            []
+        );
+
+        $websocket->set($server_settings);
 
         $websocket->on("start", function (WebSocketServer $server) use ($port, $communications, $persistence) {
             file_put_contents(WS_PID_FILE, $server->master_pid);
@@ -157,13 +192,13 @@ class Servers
         });
 
         /**
-         * Action: websocket_settings
-         * Description: Important for WebSocket custom or overwritten behaviors.
+         * Action: websocket_server
+         * Description: Important for WebSocket custom or overwritten callbacks.
          * Expected return: WebSocketServer
          * @param WebSocketServer $websocket
          */
         $websocket = Hooks::getInstance()->apply_filters(
-            'websocket_settings',
+            'websocket_server',
             $websocket
         );
 
@@ -255,12 +290,50 @@ class Servers
     {
         handle_existing_pid(PID_FILE);
 
-        $server = new Server(HTTP_SERVER_HOST, get_input()->getOption(HTTP_PORT_PARAM));
+        /**
+         * Action: http_mode
+         * Description: Important for Http server mode.
+         * Expected return: string
+         * @param string $server_mode
+         */
+        $server_mode = Hooks::getInstance()->apply_filters(
+            'http_mode',
+            SWOOLE_BASE
+        );
 
-        $server->set([
-            'document_root' => public_path(),
-            'enable_static_handler' => true,
-        ]);
+        /**
+         * Action: http_sock_type
+         * Description: Important for Http server socket type.
+         * Expected return: string
+         * @param array $server_sock_type
+         */
+        $server_sock_type = Hooks::getInstance()->apply_filters(
+            'http_sock_type',
+            SWOOLE_BASE
+        );
+
+        $server = new Server(
+            HTTP_SERVER_HOST,
+            get_input()->getOption(HTTP_PORT_PARAM),
+            $server_mode,
+            $server_sock_type
+        );
+
+        /**
+         * Action: http_settings
+         * Description: Important for Http custom settings.
+         * Expected return: array
+         * @param array $server_settings
+         */
+        $server_settings = Hooks::getInstance()->apply_filters(
+            'http_settings',
+            [
+                'document_root' => public_path(),
+                'enable_static_handler' => true,
+            ]
+        );
+
+        $server->set($server_settings);
 
         $server->on("start", function (Server $server) {
             global $argv;
@@ -280,13 +353,13 @@ class Servers
         });
 
         /**
-         * Action: http_settings
-         * Description: Important for Http custom or overwritten behaviors.
+         * Action: http_server
+         * Description: Important for Http custom or overwritten callbacks.
          * Expected return: Server
          * @param Server $server
          */
         $server = Hooks::getInstance()->apply_filters(
-            'http_settings',
+            'http_server',
             $server
         );
 
