@@ -314,8 +314,8 @@ class Servers
             );
 
             $server_settings = array_merge($server_settings, [
-                'ssl_cert_file' => WS_SSL_CERTIFICATE,
-                'ssl_key_file' => WS_SSL_KEY,
+                'ssl_cert_file' => SSL_CERTIFICATE,
+                'ssl_key_file' => SSL_KEY,
             ]);
         } else {
             $server = new Server(
