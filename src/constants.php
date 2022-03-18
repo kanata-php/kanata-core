@@ -16,12 +16,36 @@ if (!defined('HTTP_SERVER_PORT')) {
     define('HTTP_SERVER_PORT', env('HTTP_SERVER_PORT', 8001));
 }
 
+if (!defined('HTTP_SERVER_SSL')) {
+    define('HTTP_SERVER_SSL', env('HTTP_SERVER_SSL', false));
+}
+
+if (!defined('SSL_CERTIFICATE')) {
+    define('SSL_CERTIFICATE', env('SSL_CERTIFICATE', ''));
+}
+
+if (!defined('SSL_KEY')) {
+    define('SSL_KEY', env('SSL_KEY', ''));
+}
+
 if (!defined('WS_SERVER_HOST')) {
     define('WS_SERVER_HOST', env('WS_SERVER_HOST', '0.0.0.0'));
 }
 
 if (!defined('WS_SERVER_PORT')) {
     define('WS_SERVER_PORT', env('WS_SERVER_PORT', 8002));
+}
+
+if (!defined('WS_SERVER_SSL')) {
+    define('WS_SERVER_SSL', env('WS_SERVER_SSL', false));
+}
+
+if (!defined('WS_SSL_CERTIFICATE')) {
+    define('WS_SSL_CERTIFICATE', env('WS_SSL_CERTIFICATE', ''));
+}
+
+if (!defined('WS_SSL_KEY')) {
+    define('WS_SSL_KEY', env('WS_SSL_KEY', ''));
 }
 
 if (!defined('WS_TICK_ENABLED')) {

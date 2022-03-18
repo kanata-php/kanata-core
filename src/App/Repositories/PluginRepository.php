@@ -48,7 +48,7 @@ class PluginRepository implements Repository
         }
 
         if ($searching) {
-            return $plugins->get()->toArray();
+            return $plugins->first()->toArray();
         }
 
         return [];

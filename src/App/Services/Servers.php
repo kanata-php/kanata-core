@@ -63,18 +63,11 @@ class Servers
             SWOOLE_BASE
         );
 
-        /**
-         * Action: websocket_sock_type
-         * Description: Important for WebSocket server socket type.
-         * Expected return: string
-         * @param array $server_sock_type
-         */
-        $server_sock_type = Hooks::getInstance()->apply_filters(
-            'websocket_sock_type',
-            SWOOLE_BASE
-        );
-
-        $websocket = new WebSocketServer(WS_SERVER_HOST, $port, $server_mode, $server_sock_type);
+        if (HTTP_SERVER_SSL === true) {
+            $websocket = new WebSocketServer(WS_SERVER_HOST, $port, $server_mode, SWOOLE_SOCK_TCP);
+        } else {
+            $websocket = new WebSocketServer(WS_SERVER_HOST, $port, $server_mode, SWOOLE_SOCK_TCP | SWOOLE_SSL);
+        }
 
         /**
          * Action: websocket_settings
@@ -301,23 +294,21 @@ class Servers
             SWOOLE_BASE
         );
 
-        /**
-         * Action: http_sock_type
-         * Description: Important for Http server socket type.
-         * Expected return: string
-         * @param array $server_sock_type
-         */
-        $server_sock_type = Hooks::getInstance()->apply_filters(
-            'http_sock_type',
-            SWOOLE_BASE
-        );
-
-        $server = new Server(
-            HTTP_SERVER_HOST,
-            get_input()->getOption(HTTP_PORT_PARAM),
-            $server_mode,
-            $server_sock_type
-        );
+        if (WS_SERVER_SSL === true) {
+            $server = new Server(
+                HTTP_SERVER_HOST,
+                get_input()->getOption(HTTP_PORT_PARAM),
+                $server_mode,
+                SWOOLE_SOCK_TCP
+            );
+        } else {
+            $server = new Server(
+                HTTP_SERVER_HOST,
+                get_input()->getOption(HTTP_PORT_PARAM),
+                $server_mode,
+                SWOOLE_SOCK_TCP | SWOOLE_SSL
+            );
+        }
 
         /**
          * Action: http_settings
