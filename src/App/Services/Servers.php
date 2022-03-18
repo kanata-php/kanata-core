@@ -65,7 +65,7 @@ class Servers
 
         $server_settings = [];
 
-        if (HTTP_SERVER_SSL === true) {
+        if (WS_SERVER_SSL === true) {
             $websocket = new WebSocketServer(WS_SERVER_HOST, $port, $server_mode, SWOOLE_SOCK_TCP | SWOOLE_SSL);
             $server_settings = [
                 'ssl_cert_file' => WS_SSL_CERTIFICATE,
@@ -305,7 +305,7 @@ class Servers
             'enable_static_handler' => true,
         ];
 
-        if (WS_SERVER_SSL === true) {
+        if (HTTP_SERVER_SSL === true) {
             $server = new Server(
                 HTTP_SERVER_HOST,
                 get_input()->getOption(HTTP_PORT_PARAM),
