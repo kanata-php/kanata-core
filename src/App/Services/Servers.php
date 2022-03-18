@@ -63,10 +63,16 @@ class Servers
             SWOOLE_BASE
         );
 
+        $server_settings = [];
+
         if (HTTP_SERVER_SSL === true) {
-            $websocket = new WebSocketServer(WS_SERVER_HOST, $port, $server_mode, SWOOLE_SOCK_TCP);
-        } else {
             $websocket = new WebSocketServer(WS_SERVER_HOST, $port, $server_mode, SWOOLE_SOCK_TCP | SWOOLE_SSL);
+            $server_settings = [
+                'ssl_cert_file' => WS_SSL_CERTIFICATE,
+                'ssl_key_file' => WS_SSL_KEY,
+            ];
+        } else {
+            $websocket = new WebSocketServer(WS_SERVER_HOST, $port, $server_mode, SWOOLE_SOCK_TCP);
         }
 
         /**
@@ -77,7 +83,7 @@ class Servers
          */
         $server_settings = Hooks::getInstance()->apply_filters(
             'websocket_settings',
-            []
+            $server_settings
         );
 
         $websocket->set($server_settings);
@@ -294,19 +300,29 @@ class Servers
             SWOOLE_BASE
         );
 
+        $server_settings = [
+            'document_root' => public_path(),
+            'enable_static_handler' => true,
+        ];
+
         if (WS_SERVER_SSL === true) {
             $server = new Server(
                 HTTP_SERVER_HOST,
                 get_input()->getOption(HTTP_PORT_PARAM),
                 $server_mode,
-                SWOOLE_SOCK_TCP
+                SWOOLE_SOCK_TCP | SWOOLE_SSL
             );
+
+            $server_settings = array_merge($server_settings, [
+                'ssl_cert_file' => WS_SSL_CERTIFICATE,
+                'ssl_key_file' => WS_SSL_KEY,
+            ]);
         } else {
             $server = new Server(
                 HTTP_SERVER_HOST,
                 get_input()->getOption(HTTP_PORT_PARAM),
                 $server_mode,
-                SWOOLE_SOCK_TCP | SWOOLE_SSL
+                SWOOLE_SOCK_TCP
             );
         }
 
@@ -316,13 +332,7 @@ class Servers
          * Expected return: array
          * @param array $server_settings
          */
-        $server_settings = Hooks::getInstance()->apply_filters(
-            'http_settings',
-            [
-                'document_root' => public_path(),
-                'enable_static_handler' => true,
-            ]
-        );
+        $server_settings = Hooks::getInstance()->apply_filters('http_settings', $server_settings);
 
         $server->set($server_settings);
 
