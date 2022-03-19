@@ -180,7 +180,7 @@ class PluginRepository implements Repository
     {
         $pluginDirectoryName = basename($pluginPath);
         $record = $this->registerPlugin([
-            'name' => $pluginDirectoryName,
+            'name' => slugToCamel($pluginDirectoryName),
             'directory_name' => $pluginDirectoryName,
             'path' => $pluginPath,
         ]);

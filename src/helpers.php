@@ -481,6 +481,21 @@ if (! function_exists('camelToSlug')) {
     }
 }
 
+if (! function_exists('slugToCamel')) {
+    /**
+     * Convert Slug to Camel Case.
+     *
+     * @param string $text
+     * @return string
+     */
+    function slugToCamel(string $text): string
+    {
+        return ucfirst(preg_replace_callback('/[-_](.)/', function ($matches) {
+            return strtoupper($matches[1]);
+        }, $text));
+    }
+}
+
 // ------------------------------------------------------------------------
 // Queues
 // ------------------------------------------------------------------------
