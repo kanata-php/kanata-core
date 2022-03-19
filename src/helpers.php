@@ -467,6 +467,20 @@ if (! function_exists('slug')) {
     }
 }
 
+if (! function_exists('camelToSlug')) {
+    /**
+     * Convert Camel Case to Slug.
+     *
+     * @param string $text
+     * @return string
+     */
+    function camelToSlug(string $text): string
+    {
+        $text = preg_replace('/(?<=\\w)(?=[A-Z])/',"-$1", $text);
+        return strtolower($text);
+    }
+}
+
 // ------------------------------------------------------------------------
 // Queues
 // ------------------------------------------------------------------------

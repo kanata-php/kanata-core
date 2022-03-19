@@ -33,7 +33,7 @@ class CreatePluginCommand extends Command
 
         $pluginClassName = $input->getArgument('name');
 
-        $slug = slug($pluginClassName);
+        $slug = camelToSlug($pluginClassName);
         $pluginPath = make_path_relative_to_project(trailingslashit(plugin_path()) . $slug);
 
         if (container()->filesystem->has($pluginPath)) {
