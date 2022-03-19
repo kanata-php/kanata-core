@@ -47,7 +47,7 @@ class PluginRepository implements Repository
             $plugins = $plugins->where('active', '=', true);
         }
 
-        if ($searching) {
+        if ($searching && null !== $plugins->first()) {
             return $plugins->first()->toArray();
         }
 

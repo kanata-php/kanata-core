@@ -55,9 +55,9 @@ class Bootstrap
 
     public static function bootstrapTinkerwell(): void
     {
+        self::processCore();
         Autoloader::startConstants();
         Autoloader::startHelpers();
-        self::processCore();
     }
 
     public static function processCore(array $args = []): void
