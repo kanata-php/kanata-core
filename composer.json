@@ -52,5 +52,10 @@
         "phpunit/phpunit": "^9.2",
         "mockery/mockery": "^1.4",
         "codedungeon/phpunit-result-printer": "^0.30"
+    },
+    "config": {
+        "allow-plugins": {
+            "wikimedia/composer-merge-plugin": true
+        }
     }
 }

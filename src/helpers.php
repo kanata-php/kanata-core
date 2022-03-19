@@ -612,7 +612,6 @@ if (! function_exists('activate_plugin')) {
         if (empty($plugin)) {
             throw new Exception('Plugin not found');
         }
-        $plugin = current($plugin);
 
         return (new PluginRepository)->updatePlugin($plugin['id'], ['active' => true]);
     }
