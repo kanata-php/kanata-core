@@ -37,9 +37,9 @@ class Routes
             $group->get('/', function (Request $request, Response $response) {
                 return view($response, 'core::home');
             })->setName('home');
+
             $group->get('/docs', [DocumentationController::class, 'index'])->setName('login');
-            $group->get('/login', [LoginController::class, 'index'])->setName('login');
-            $group->get('/register', [RegisterController::class, 'index'])->setName('register');
+
             $group->get('/admin', [AdminController::class, 'index'])->setName('admin');
         })->add($errorMiddleware);
     }

@@ -10,8 +10,6 @@ class DocumentationController
 {
     public function index(Request $request, Response $response)
     {
-        $routeContext = RouteContext::fromRequest($request);
-        $basePath = $routeContext->getBasePath();
         return view($response, 'core::docs/index');
     }
 }

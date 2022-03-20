@@ -32,8 +32,26 @@ class Dependencies
             return $logger;
         };
 
-        $container['view'] = new Engine();
-        $container['view']->addFolder('core', template_path());
+        $container['view'] = function($c) {
+            $engine = new Engine();
+
+            /**
+             * Action: view_folders
+             * Description: Here you can add new folders for views in alternative folders.
+             * Expected return: array
+             * @param array $view_folders
+             */
+            $view_folders = Hooks::getInstance()->apply_filters(
+                'view_folders',
+                ['core' => template_path()]
+            );
+
+            foreach ($view_folders as $key => $folder) {
+                $engine->addFolder($key, $folder);
+            }
+
+            return $engine;
+        };
 
         $container['cache'] = function ($c) {
             $cache = new FilesystemCache(storage_path() . 'cache/');
@@ -77,9 +95,9 @@ class Dependencies
 
         $container['socket_persistence'] = function ($c) {
             /**
-             * Here you can choose a different websocket persistence implementation.
-             *
-             * Interface: \Conveyor\SocketHandlers\Interfaces\PersistenceInterface
+             * Action: socket_persistence
+             * Description: Here you can choose a different websocket persistence implementation.
+             * Expected return: \Conveyor\SocketHandlers\Interfaces\PersistenceInterface
              */
             return Hooks::getInstance()->apply_filters(
                 'socket_persistence',
@@ -89,9 +107,9 @@ class Dependencies
 
         $container['socket_communication'] = function ($c) {
             /**
-             * Here you can choose a different websocket communication implementation.
-             *
-             * Interface: \Kanata\Interfaces\WebSocketCommunicationInterface
+             * Action: socket_communication
+             * Description: Here you can choose a different websocket communication implementation.
+             * Expected return: \Kanata\Interfaces\WebSocketCommunicationInterface
              */
             return Hooks::getInstance()->apply_filters(
                 'socket_communication',

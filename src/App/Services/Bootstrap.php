@@ -3,6 +3,7 @@
 namespace Kanata\Services;
 
 use Exception;
+use Kanata\Commands\CreateCommand;
 use Kanata\Commands\PublishPluginCommand;
 use Kanata\Commands\ShellCommand;
 use Slim\App;
@@ -28,7 +29,7 @@ class Bootstrap
     {
         $application = new Application();
         try {
-            self::processCore();
+            self::processCore(['skip_console' => true]);
         } catch (Exception $e) {
             echo PHP_EOL . $e->getMessage() . PHP_EOL . PHP_EOL;
             return;
@@ -41,6 +42,7 @@ class Bootstrap
         $application->add(new DeactivatePluginCommand());
         $application->add(new ShellCommand());
         $application->add(new PublishPluginCommand());
+        $application->add(new CreateCommand());
 
         /**
          * Action: commands
@@ -71,7 +73,10 @@ class Bootstrap
         $app = new App(new Psr17Factory, new Container(['settings' => $_ENV]));
         $container = $app->getContainer();
 
-        Console::start();
+        if (!isset($args['skip_console'])) {
+            Console::start();
+        }
+
         Dependencies::start();
         Config::start();
 

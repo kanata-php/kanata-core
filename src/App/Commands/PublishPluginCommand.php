@@ -24,7 +24,7 @@ class PublishPluginCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setHelp('This command activates a plugin.')
+            ->setHelp('This command publishes assets from plugin.')
             ->setDefinition(
                 new InputDefinition([
                     new InputArgument('plugin-name', InputArgument::REQUIRED, 'Which plugin to publish assets.'),

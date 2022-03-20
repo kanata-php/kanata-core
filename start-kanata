@@ -1,18 +1,19 @@
 #!/usr/bin/env php
 <?php
 
+
 foreach ([
-    __DIR__ . '/../../autoload.php',
-    __DIR__ . '/../autoload.php',
-    __DIR__ . '/../../vendor/autoload.php',
-    __DIR__ . '/../vendor/autoload.php',
-    __DIR__ . '/vendor/autoload.php'
+     __DIR__ . '/../../../',
+     __DIR__ . '/../../',
+     __DIR__ . '/../',
  ] as $file) {
-    if (file_exists($file)) {
-        define('PHPUNIT_COMPOSER_INSTALL', $file);
+    if (file_exists($file . 'config')) {
+        define('ROOT_FOLDER', $file);
         break;
     }
 }
+
+define('PHPUNIT_COMPOSER_INSTALL', ROOT_FOLDER . 'vendor/autoload.php');
 
 if (!defined('PHPUNIT_COMPOSER_INSTALL')) {
     fwrite(
@@ -27,12 +28,12 @@ if (!defined('PHPUNIT_COMPOSER_INSTALL')) {
 require PHPUNIT_COMPOSER_INSTALL;
 
 use Illuminate\Database\Schema\Blueprint;
+use voku\helper\Hooks;
 
-define('ROOT_FOLDER', __DIR__ . '/../../../');
 \Kanata\Services\Autoloader::startEnv();
 \Kanata\Services\Autoloader::startConstants();
 \Kanata\Services\Autoloader::startHelpers();
-\Kanata\Services\Bootstrap::processCore(['skip_plugins' => true]);
+\Kanata\Services\Bootstrap::processCore();
 
 // -----------------------------------------------------
 // prepare json dbs
@@ -92,3 +93,5 @@ if (!mysql_table_exists(DB_DATABASE, \Kanata\Models\WsAssociation::TABLE_NAME)) 
         $table->timestamps();
     });
 }
+
+Hooks::getInstance()->do_action('migrations');

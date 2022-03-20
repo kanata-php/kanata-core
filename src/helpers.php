@@ -8,6 +8,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Swoole\Process;
+use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\String\Slugger\AsciiSlugger;
@@ -206,6 +207,18 @@ if (! function_exists('add_action')) {
     /**
      * @param string $hook
      * @param $callback
+     * @return mixed
+     */
+    function add_action(string $hook, $callback): mixed
+    {
+        return Hooks::getInstance()->add_action($hook, $callback);
+    }
+}
+
+if (! function_exists('add_action')) {
+    /**
+     * @param string $hook
+     * @param $callback
      * @return void
      */
     function add_action(string $hook, $callback): void
@@ -253,6 +266,10 @@ if (! function_exists('get_output')) {
 if (! function_exists('get_input')) {
     function get_input(): InputInterface
     {
+        if (!container()->has('input')) {
+            return new ArgvInput;
+        }
+
         return container()->input;
     }
 }
@@ -265,6 +282,10 @@ if (! function_exists('is_websocket_execution')) {
      */
     function is_websocket_execution(): bool
     {
+        if (!get_input()->hasOption('websocket')) {
+            return false;
+        }
+
         return get_input()->getOption('websocket');
     }
 }
@@ -289,6 +310,10 @@ if (! function_exists('is_queue_execution')) {
      */
     function is_queue_execution(): bool
     {
+        if (!get_input()->hasOption('queue')) {
+            return false;
+        }
+
         return get_input()->getOption('queue');
     }
 }

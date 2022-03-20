@@ -1,0 +1,34 @@
+<?php
+
+namespace {{pluginClassName}}\Commands;
+
+use Kanata\Commands\Traits\LogoTrait;
+use Mustache_Engine;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
+
+class {{commandClassName}} extends Command
+{
+    use LogoTrait;
+
+    protected static $defaultName = 'new-command';
+
+    protected function configure(): void
+    {
+        $this->setHelp('This command...');
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $io = new SymfonyStyle($input, $output);
+
+        $output->writeln('');
+        $io->info('Kanata - New Command');
+        $output->writeln('');
+
+        return Command::SUCCESS;
+    }
+}
