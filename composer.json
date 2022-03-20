@@ -5,7 +5,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Kanata\\": "src/App",
+            "Kanata\\": "src/Kanata",
             "Tests\\": "tests"
         }
     },
@@ -42,7 +42,8 @@
         "greg0/lazer-database": "^2.0",
         "php-amqplib/php-amqplib": "^3.1",
         "psy/psysh": "@stable",
-        "danielstjules/stringy": "^3.1"
+        "danielstjules/stringy": "^3.1",
+        "symfony/password-hasher": "^6.0"
     },
     "bin": [
         "start-kanata"

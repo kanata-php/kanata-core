@@ -20,9 +20,25 @@ class Bootstrap
 {
     public static function startServers(): void
     {
-        self::processCore();
+        global $argv;
+
+        $coreArgs = [];
+
+        switch (true) {
+            case in_array('--websocket', $argv):
+                $server_type = Servers::WEBSOCKET;
+                break;
+            case in_array('--queue', $argv):
+                $server_type = Servers::QUEUE;
+                break;
+            default:
+                // $coreArgs = ['start_session' => true];
+                $server_type = Servers::HTTP;
+        }
+
+        self::processCore($coreArgs);
         Routes::start();
-        Servers::start();
+        Servers::start($server_type);
     }
 
     public static function startConsole(): void
@@ -66,12 +82,17 @@ class Bootstrap
     {
         global $app, $container;
 
+        if (isset($args['only_plugins'])) {
+            Autoloader::startPlugins();
+            return;
+        }
+
         Autoloader::startEnv();
         Autoloader::startConstants();
         Autoloader::startHelpers();
 
-        $app = new App(new Psr17Factory, new Container(['settings' => $_ENV]));
-        $container = $app->getContainer();
+        $container = new Container(['settings' => $_ENV]);
+        $app = new App(new Psr17Factory, $container);
 
         if (!isset($args['skip_console'])) {
             Console::start();

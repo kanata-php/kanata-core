@@ -2,6 +2,7 @@
 
 namespace Kanata\Services;
 
+use Kanata\Models\Plugin;
 use Kanata\Repositories\PluginRepository;
 use Doctrine\Common\Annotations\AnnotationReader;
 use FilesystemIterator;
@@ -56,7 +57,7 @@ class PluginLoader
             $pluginPath = $info->getPathname();
             $plugin = $this->pluginRepository->registerIfNotRegistered($pluginPath);
             $this->loadPlugin($plugin);
-            $pluginsFound[] = $plugin['id'];
+            $pluginsFound[] = $plugin?->id;
         }
 
         $this->unregisterIfNotFound($pluginsFound);
@@ -64,21 +65,16 @@ class PluginLoader
 
     private function unregisterIfNotFound(array $pluginsFound): void
     {
-        $registeredPlugins = [];
-        foreach (PluginRepository::all() as $registered) {
-            $registeredPlugins[] = $registered['id'];
-        }
+        $registeredPlugins = PluginRepository::all()->pluck('id');
 
-        $remaining = array_filter($registeredPlugins, function ($item) use ($pluginsFound) {
+        $registeredPlugins->filter(function($item) use ($pluginsFound) {
             return !in_array($item, $pluginsFound);
-        });
-
-        foreach($remaining as $item) {
+        })->each(function($item) {
             PluginRepository::delete($item);
-        }
+        });
     }
 
-    public function loadPlugin(array $plugin)
+    public function loadPlugin(Plugin $plugin)
     {
         $this->loadPluginClass($plugin);
 
@@ -86,14 +82,14 @@ class PluginLoader
         $reflectionClass = new ReflectionClass($className);
         $this->loadPluginAnnotations($plugin, $reflectionClass);
 
-        if ($plugin['active']) {
-            $this->loader->addPrefix($className, $plugin['path'] . '/src');
+        if ($plugin->active) {
+            $this->loader->addPrefix($className, $plugin->path . '/src');
             $instance = $reflectionClass->newInstanceArgs([container()]);
             $instance->start();
         }
     }
 
-    private function loadPluginClass(array $plugin): void
+    private function loadPluginClass(Plugin $plugin): void
     {
         $mainFile = $this->pluginRepository->getMainFile($plugin);
         $className = $this->pluginRepository->getClassName($plugin);
@@ -101,7 +97,7 @@ class PluginLoader
         $this->loader->setClassFile($className, $mainFile);
     }
 
-    private function loadPluginAnnotations(array &$plugin, ReflectionClass $reflectionClass): void
+    private function loadPluginAnnotations(Plugin &$plugin, ReflectionClass $reflectionClass): void
     {
         $reader = new AnnotationReader();
         $realName = $reader->getClassAnnotation($reflectionClass, PluginAnnotation::class);
@@ -109,10 +105,10 @@ class PluginLoader
         $realDescription = $reader->getClassAnnotation($reflectionClass, DescriptionAnnotation::class);
 
         if (
-            $plugin['name'] !== $realName->name
-            || $plugin['author_name'] !== $realAuthor->name
-            || $plugin['author_email'] !== $realAuthor->email
-            || $plugin['description'] !== $realDescription->value
+            $plugin->name !== $realName->name
+            || $plugin->author_name !== $realAuthor->name
+            || $plugin->author_email !== $realAuthor->email
+            || $plugin->description !== $realDescription->value
         ) {
             $data = [
                 'name' => $realName->name,
@@ -120,7 +116,7 @@ class PluginLoader
                 'author_email' => $realAuthor->email,
                 'description' => $realDescription->value,
             ];
-            $result = $this->pluginRepository->updatePlugin($plugin['id'], $data);
+            $result = $this->pluginRepository->updatePlugin($plugin->id, $data);
             if (!$result) {
                 logger()->info('There was an error while updating a plugin info: ' . implode(', ', $this->pluginRepository->errors));
             }

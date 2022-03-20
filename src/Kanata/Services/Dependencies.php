@@ -141,6 +141,5 @@ class Dependencies
                 QUEUE_SERVER_PASSWORD
             );
         };
-
     }
 }

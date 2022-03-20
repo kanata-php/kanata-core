@@ -33,7 +33,7 @@ use voku\helper\Hooks;
 \Kanata\Services\Autoloader::startEnv();
 \Kanata\Services\Autoloader::startConstants();
 \Kanata\Services\Autoloader::startHelpers();
-\Kanata\Services\Bootstrap::processCore();
+\Kanata\Services\Bootstrap::processCore(['skip_plugins' => true]);
 
 // -----------------------------------------------------
 // prepare json dbs
@@ -93,5 +93,7 @@ if (!mysql_table_exists(DB_DATABASE, \Kanata\Models\WsAssociation::TABLE_NAME)) 
         $table->timestamps();
     });
 }
+
+\Kanata\Services\Bootstrap::processCore(['only_plugins' => true]);
 
 Hooks::getInstance()->do_action('migrations');

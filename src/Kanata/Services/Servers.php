@@ -21,20 +21,23 @@ use Swoole\WebSocket\Server as WebSocketServer;
 
 class Servers
 {
+    const HTTP = 'http';
+    const WEBSOCKET = 'websocket';
+    const QUEUE = 'queue';
 
-    public static function start(): void
+    public static function start(string $server_type = self::HTTP): void
     {
-        global $app, $argv;
+        global $app;
 
         $psr17Factory = new Psr17Factory();
 
         $requestConverter = new SwooleServerRequestConverter($psr17Factory, $psr17Factory, $psr17Factory, $psr17Factory);
 
-        switch (true) {
-            case in_array('--websocket', $argv):
+        switch ($server_type) {
+            case $server_type === self::WEBSOCKET:
                 self::startWebsocketServer();
                 break;
-            case in_array('--queue', $argv):
+            case $server_type === self::QUEUE:
                 self::startMessageService();
                 break;
             default:

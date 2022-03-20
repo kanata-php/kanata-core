@@ -693,3 +693,34 @@ if (! function_exists('mysql_table_exists')) {
         return isset($results[0]) && $results[0]?->exists === 1;
     }
 }
+
+// ------------------------------------------------------------------------
+// Database
+// ------------------------------------------------------------------------
+
+if (! function_exists('back')) {
+    /**
+     * Verify if the mysql db table exists.
+     *
+     * @param Request $request
+     * @param Request $response
+     * @param array $query
+     */
+    function back(Request $request, Response $response, array $queryParams)
+    {
+        $referer = current(explode('?', current($request->getHeader('referer'))));
+
+        if (empty($referer)) {
+            throw new Exception('There is no referer at request object.');
+        }
+
+        $query = '';
+        if (!empty($queryParams)) {
+            $query = '?' . http_build_query($queryParams);
+        }
+
+        return $response
+            ->withHeader('Location', $referer . $query)
+            ->withStatus(302);
+    }
+}

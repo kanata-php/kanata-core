@@ -3,6 +3,7 @@
 namespace Kanata\Repositories;
 
 use Error;
+use Illuminate\Database\Eloquent\Collection;
 use Kanata\Models\Plugin;
 use Kanata\Models\Traits\Validation;
 use Kanata\Repositories\Interfaces\Repository;
@@ -24,9 +25,9 @@ class PluginRepository implements Repository
         'active' => false,
     ];
 
-    public static function all(): array
+    public static function all(): Collection
     {
-        return Plugin::all()->toArray();
+        return Plugin::all();
     }
 
     public static function get(array $params): array
@@ -96,16 +97,16 @@ class PluginRepository implements Repository
         }
     }
 
-    public function registerPlugin(array $data): array
+    public function registerPlugin(array $data): ?Plugin
     {
         try {
             $this->validate('create', $data);
         } catch (Exception $e) {
             $this->errors = explode('|', $e->getMessage());
-            return [];
+            return null;
         }
 
-        $record = Plugin::where('directory_name', '=', $data['directory_name'])->first()?->toArray();
+        $record = Plugin::where('directory_name', '=', $data['directory_name'])->first();
 
         if (null !== $record && null !== $record['directory_name']) {
             return $record;
@@ -118,7 +119,7 @@ class PluginRepository implements Repository
 
         $data = $this->fillDefaults($data);
 
-        return Plugin::create($data)->toArray();
+        return Plugin::create($data);
     }
 
     public function fillDefaults(array $data): array
@@ -149,19 +150,21 @@ class PluginRepository implements Repository
         return $record->update($data);
     }
 
-    public function getClassName(array $plugin): string
+    public function getClassName(Plugin $plugin): string
     {
-        return ucfirst((string) s($plugin['directory_name'])->camelize());
+        return ucfirst((string) s($plugin->directory_name)->camelize());
     }
 
     /**
      * Plugin has a main file that has to be capital/camel case of the directory, or "index.php".
      *
+     * @param Plugin $plugin
+     *
      * @return ?string
      */
-    public function getMainFile(array $plugin): ?string
+    public function getMainFile(Plugin $plugin): ?string
     {
-        $pluginPath = trailingslashit($plugin['path']);
+        $pluginPath = trailingslashit($plugin->path);
 
         $mainFileFullPath = $pluginPath . $this->getClassName($plugin) . '.php';
         if (file_exists($mainFileFullPath)) {
@@ -176,7 +179,7 @@ class PluginRepository implements Repository
         return null;
     }
 
-    public function registerIfNotRegistered(string $pluginPath): array
+    public function registerIfNotRegistered(string $pluginPath): Plugin
     {
         $pluginDirectoryName = basename($pluginPath);
         $record = $this->registerPlugin([
@@ -185,8 +188,8 @@ class PluginRepository implements Repository
             'path' => $pluginPath,
         ]);
 
-        if ($record['path'] !== $pluginPath) {
-            self::updatePlugin($record['id'], [
+        if ($record->path !== $pluginPath) {
+            self::updatePlugin($record->id, [
                 'path' => $pluginPath,
             ]);
         }
