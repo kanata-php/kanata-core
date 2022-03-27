@@ -3,8 +3,6 @@
 namespace Kanata\Models\Traits;
 
 use Exception;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Required;
 use Symfony\Component\Validator\Validation as SymfonyValidation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -33,5 +31,24 @@ trait Validation
             }
             throw new Exception(implode('|', $message));
         }
+    }
+
+    /**
+     * @param array $validationData Format: ['field_key' => ['value' => value, 'rules' => []]]
+     * @return array Validation errors.
+     */
+    public function validateFields(array $validationData): array
+    {
+        $errors = [];
+
+        foreach ($validationData as $key => $value) {
+            try {
+                $this->validateField($value['value'], $value['rules']);
+            } catch (Exception $e) {
+                $errors[$key] = $e->getMessage();
+            }
+        }
+
+        return $errors;
     }
 }
