@@ -2,22 +2,25 @@
 
 namespace Kanata\Services;
 
-use Error;
-use Exception;
-use Ilex\SwoolePsr7\SwooleServerRequestConverter;
-use Ilex\SwoolePsr7\SwooleResponseConverter;
-use Nyholm\Psr7\Factory\Psr17Factory;
-use Slim\App;
-use Swoole\Http\Server;
-use Swoole\Http\Request;
-use Swoole\Http\Response;
-use voku\helper\Hooks;
-use PhpAmqpLib\Connection\AMQPStreamConnection;
 use Conveyor\SocketHandlers\Interfaces\SocketHandlerInterface;
 use Conveyor\SocketHandlers\SocketMessageRouter;
+use Error;
+use Exception;
+use Ilex\SwoolePsr7\SwooleResponseConverter;
+use Ilex\SwoolePsr7\SwooleServerRequestConverter;
+use Kanata\Exceptions\UnauthorizedException;
+use Kanata\Http\Middlewares\CoreMiddleware;
+use Nyholm\Psr7\Factory\Psr17Factory;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Slim\App;
+use Swoole\Http\Request;
+use Swoole\Http\Response;
+use Swoole\Http\Server;
 use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server as WebSocketServer;
+use voku\helper\Hooks;
 
 class Servers
 {
@@ -347,14 +350,35 @@ class Servers
             echo 'Swoole Server is started at http://' . $server->host . ':' . $server->port . PHP_EOL;
         });
 
-        $server->on("request", function (
+        $server->on("request", new CoreMiddleware(function (
             Request $swooleRequest, Response $swooleResponse
         ) use ($app, $requestConverter) {
             $psr7Request = $requestConverter->createFromSwoole($swooleRequest);
+
+            try {
+                /**
+                 * Action: http_middleware
+                 * Description: Allows HTTP middleware execution on Psr7 Request.
+                 * @param ServerRequestInterface $request
+                 */
+                $psr7Request = Hooks::getInstance()->apply_filters('http_middleware', $psr7Request);
+            } catch (UnauthorizedException $e) {
+                $swooleResponse->status(403, 'Unauthorized procedure!');
+
+                /**
+                 * Action: unauthorized_view
+                 * Description: Customize unauthorized view.
+                 * @param string
+                 */
+                $unauthorized_view = Hooks::getInstance()->apply_filters('unauthorized_view', 'core::exceptions/unauthorized');
+
+                return $swooleResponse->end(container()->view->render($unauthorized_view));
+            }
+            
             $psr7Response = $app->handle($psr7Request);
             $converter = new SwooleResponseConverter($swooleResponse);
             $converter->send($psr7Response);
-        });
+        }));
 
         /**
          * Action: http_server

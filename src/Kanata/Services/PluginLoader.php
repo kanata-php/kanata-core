@@ -106,9 +106,21 @@ class PluginLoader
 
         if (
             $plugin->name !== $realName->name
-            || $plugin->author_name !== $realAuthor->name
-            || $plugin->author_email !== $realAuthor->email
-            || $plugin->description !== $realDescription->value
+            || (
+                !empty($realAuthor->name)
+                && !empty($plugin->author_name)
+                && $plugin->author_name !== $realAuthor->name
+            )
+            || (
+                !empty($realAuthor->email)
+                && !empty($plugin->author_email)
+                && $plugin->author_email !== $realAuthor->email
+            )
+            || (
+                !empty($realDescription->value)
+                && !empty($plugin->description)
+                && $plugin->description !== $realDescription->value
+            )
         ) {
             $data = [
                 'name' => $realName->name,
@@ -118,7 +130,21 @@ class PluginLoader
             ];
             $result = $this->pluginRepository->updatePlugin($plugin->id, $data);
             if (!$result) {
-                logger()->info('There was an error while updating a plugin info: ' . implode(', ', $this->pluginRepository->errors));
+                logger()->error('There was an error while updating a plugin info: ' . implode(', ', $this->pluginRepository->errors));
+                logger()->debug('Error data: ' . json_encode([
+                    'plugin_id' => $plugin->id,
+                    'data' => $data,
+                    'update_pre_condition' => $plugin->name !== $realName->name
+                        || $plugin->author_name !== $realAuthor->name
+                        || $plugin->author_email !== $realAuthor->email
+                        || $plugin->description !== $realDescription->value,
+                    'update_each_pre_condition' => json_encode([
+                        'name' => $plugin->name !== $realName->name,
+                        'author_name' => $plugin->author_name !== $realAuthor->name,
+                        'author_email' => $plugin->author_email !== $realAuthor->email,
+                        'description' => $plugin->description !== $realDescription->value,
+                    ]),
+                ]));
             }
         }
     }

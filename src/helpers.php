@@ -16,6 +16,7 @@ use voku\helper\Hooks;
 use League\Flysystem\Filesystem;
 use Nyholm\Psr7\Factory\Psr17Factory;
 
+
 /**
  * Summary:
  *
@@ -28,10 +29,12 @@ use Nyholm\Psr7\Factory\Psr17Factory;
  * 7. WebSockets
  * 8. Plugins
  * 9. Database
+ * 10. URL
  */
 
+
 // ------------------------------------------------------------------------
-// Generic Helpers
+// 1. Generic Helpers
 // ------------------------------------------------------------------------
 
 if (! function_exists('container')) {
@@ -253,7 +256,7 @@ if (!function_exists('array_get')) {
 }
 
 // ------------------------------------------------------------------------
-// Execution Context Information
+// 2. Execution Context Information
 // ------------------------------------------------------------------------
 
 if (! function_exists('get_output')) {
@@ -319,7 +322,7 @@ if (! function_exists('is_queue_execution')) {
 }
 
 // ------------------------------------------------------------------------
-// Path Helpers
+// 3. Path Helpers
 // ------------------------------------------------------------------------
 
 if (! function_exists('make_path_relative_to_project')) {
@@ -453,7 +456,7 @@ if (! function_exists('untrailingslashit')) {
 }
 
 // ------------------------------------------------------------------------
-// View
+// 4. View
 // ------------------------------------------------------------------------
 
 if (! function_exists('view')) {
@@ -475,7 +478,7 @@ if (! function_exists('view')) {
 }
 
 // ------------------------------------------------------------------------
-// String
+// 5. String
 // ------------------------------------------------------------------------
 
 if (! function_exists('slug')) {
@@ -522,7 +525,7 @@ if (! function_exists('slugToCamel')) {
 }
 
 // ------------------------------------------------------------------------
-// Queues
+// 6. Queues
 // ------------------------------------------------------------------------
 
 if (! function_exists('register_queue')) {
@@ -553,7 +556,7 @@ if (! function_exists('register_queue')) {
 }
 
 // ------------------------------------------------------------------------
-// WebSockets
+// 7. WebSockets
 // ------------------------------------------------------------------------
 
 if (! function_exists('socket_communication')) {
@@ -581,7 +584,7 @@ if (! function_exists('socket_persistence')) {
 }
 
 // ------------------------------------------------------------------------
-// Plugins
+// 8. Plugins
 // ------------------------------------------------------------------------
 
 if (! function_exists('get_plugins')) {
@@ -672,7 +675,7 @@ if (! function_exists('activate_plugin')) {
 }
 
 // ------------------------------------------------------------------------
-// Database
+// 9. Database
 // ------------------------------------------------------------------------
 
 if (! function_exists('mysql_table_exists')) {
@@ -695,7 +698,7 @@ if (! function_exists('mysql_table_exists')) {
 }
 
 // ------------------------------------------------------------------------
-// Database
+// 10. URL
 // ------------------------------------------------------------------------
 
 if (! function_exists('back')) {
@@ -719,8 +722,70 @@ if (! function_exists('back')) {
             $query = '?' . http_build_query($queryParams);
         }
 
+        return redirect($response, $referer . $query);
+    }
+}
+
+if (! function_exists('redirect')) {
+    /**
+     * Verify if the mysql db table exists.
+     *
+     * @param Request $request
+     * @param Request $response
+     * @param array $query
+     */
+    function redirect(Response $response, string $url)
+    {
         return $response
-            ->withHeader('Location', $referer . $query)
+            ->withHeader('Location', $url)
             ->withStatus(302);
+    }
+}
+
+if (! function_exists('base_url')) {
+    /**
+     * Get base url of the system.
+     *
+     * @return string
+     * @throws Exception
+     */
+    function base_url(): string
+    {
+        $url = config('app.app-url');
+
+        if (null === $url) {
+            throw new Exception('No base_url found!');
+        }
+
+        $protocol = env('HTTP_SERVER_SSL') ? 'https://' : 'http://';
+
+        return $protocol . $url;
+    }
+}
+
+// ------------------------------------------------------------------------
+// 11. Auth
+// ------------------------------------------------------------------------
+
+if (! function_exists('is_logged')) {
+    /**
+     * Identifies authorization in the request.
+     *
+     * @param Request $request
+     * @return bool
+     */
+    function is_logged(Request $request): bool
+    {
+        /**
+         * Action: is_logged
+         * Description: Important for WebSocket server mode.
+         * Expected return: bool
+         * @param Request $request
+         */
+        return Hooks::getInstance()->apply_filters(
+            'is_logged',
+            true,
+            $request
+        );
     }
 }

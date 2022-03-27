@@ -3,24 +3,16 @@
 namespace Kanata\Services;
 
 use Kanata\Interfaces\HashInterface;
-use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactory;
-use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 
 class Hash implements HashInterface
 {
-    const ALGORITHM_BCRYPT = 'bcrypt';
-
-    private static function getHasher(string $algorithm): PasswordHasherInterface
+    public static function make(string $password, string $algorithm = PASSWORD_BCRYPT): string
     {
-        $factory = new PasswordHasherFactory([
-            $algorithm => ['algorithm' => $algorithm],
-        ]);
-
-        return $factory->getPasswordHasher($algorithm);
+        return password_hash($password, $algorithm);
     }
 
-    public static function make(string $password, string $algorithm = self::ALGORITHM_BCRYPT): string
+    public static function verify(string $password, string $hash): bool
     {
-        return self::getHasher($algorithm)->hash($password);
+        return password_verify($password, $hash);
     }
 }

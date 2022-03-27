@@ -32,7 +32,9 @@ class Routes
             $group = Hooks::getInstance()->apply_filters('routes', $group);
 
             $group->get('/', function (Request $request, Response $response) {
-                return view($response, 'core::home');
+                return view($response, 'core::home', [
+                    'is_logged' => is_logged($request),
+                ]);
             })->setName('home');
 
             $group->get('/docs', [DocumentationController::class, 'index'])->setName('login');
