@@ -107,19 +107,38 @@ if (!defined('DEFAULT_QUEUE')) {
 }
 
 if (!defined('OVERWRITE_EXISTENT_SERVICE')) {
+    /**
+     * Overwrite or not an existent service using the same port.
+     */
     define('OVERWRITE_EXISTENT_SERVICE', env('OVERWRITE_EXISTENT_SERVICE', true));
 }
 
 if (!defined('WEBSOCKET_CONSOLE_OPTION')) {
+    /**
+     * Specify websocket context.
+     */
     define('WEBSOCKET_CONSOLE_OPTION', 'websocket');
 }
 
 if (!defined('QUEUE_CONSOLE_OPTION')) {
+    /**
+     * Specify queue context.
+     */
     define('QUEUE_CONSOLE_OPTION', 'queue');
 }
 
 if (!defined('QUEUE_NAME_CONSOLE_OPTION')) {
+    /**
+     * Specify the name of the queue being executed in the current context.
+     */
     define('QUEUE_NAME_CONSOLE_OPTION', 'queue-name');
+}
+
+if (!defined('FRESH_CONSOLE_OPTION')) {
+    /**
+     * Specify that "start-kanata" will run migrations fresh.
+     */
+    define('FRESH_CONSOLE_OPTION', 'fresh');
 }
 
 // -----------------------------------------------------

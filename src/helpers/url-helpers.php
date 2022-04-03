@@ -3,17 +3,21 @@
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
-if (! function_exists('back')) {
+if (! function_exists('previous_url')) {
     /**
-     * Verify if the mysql db table exists.
+     * Get the previous url.
      *
      * @param Request $request
-     * @param Request $response
      * @param array $query
+     * @return string
      */
-    function back(Request $request, Response $response, array $queryParams)
+    function previous_url(Request $request, array $queryParams): string
     {
-        $referer = current(explode('?', current($request->getHeader('referer'))));
+        if ($request->hasHeader('referer')) {
+            $referer = current(explode('?', current($request->getHeader('referer'))));
+        } else {
+            $referer = route('home', [], [], $request);
+        }
 
         if (empty($referer)) {
             throw new Exception('There is no referer at request object.');
@@ -24,19 +28,34 @@ if (! function_exists('back')) {
             $query = '?' . http_build_query($queryParams);
         }
 
-        return redirect($response, $referer . $query);
+        return $referer . $query;
+    }
+}
+
+if (! function_exists('back')) {
+    /**
+     * Get the previous url.
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param array $query
+     * @return Response
+     */
+    function back(Request $request, Response $response, array $queryParams = []): Response
+    {
+        return redirect($response, previous_url($request, $queryParams));
     }
 }
 
 if (! function_exists('redirect')) {
     /**
-     * Verify if the mysql db table exists.
+     * Get the redirection url.
      *
-     * @param Request $request
      * @param Request $response
-     * @param array $query
+     * @param string $url
+     * @return Response
      */
-    function redirect(Response $response, string $url)
+    function redirect(Response $response, string $url): Response
     {
         return $response
             ->withHeader('Location', $url)
@@ -75,10 +94,14 @@ if (! function_exists('route')) {
      * @return string
      * @throws Exception
      */
-    function route(string $name, array $params = [], array $urlQuery = []): string
+    function route(string $name, array $params = [], array $urlQuery = [], ?Request $request = null): string
     {
         global $app;
         $routeParser = $app->getRouteCollector()->getRouteParser();
-        return $routeParser->urlFor($name, $params, $urlQuery);
+        if (null !== $request) {
+            return $routeParser->fullUrlFor($request->getUri(), $name, $params, $urlQuery);
+        } else {
+            return $routeParser->urlFor($name, $params, $urlQuery);
+        }
     }
 }

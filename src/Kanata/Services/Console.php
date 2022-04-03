@@ -31,6 +31,9 @@ class Console
             new InputOption(QUEUE_CONSOLE_OPTION, null, InputOption::VALUE_NONE),
             new InputOption(QUEUE_NAME_CONSOLE_OPTION, null, InputOption::VALUE_REQUIRED),
 
+            // fresh
+            new InputOption(FRESH_CONSOLE_OPTION, null, InputOption::VALUE_NONE),
+
             // arguments
             new InputArgument('arg', InputArgument::OPTIONAL),
             new InputArgument('arg2', InputArgument::OPTIONAL),

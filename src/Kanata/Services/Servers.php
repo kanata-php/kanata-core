@@ -2,25 +2,29 @@
 
 namespace Kanata\Services;
 
-use Conveyor\SocketHandlers\Interfaces\SocketHandlerInterface;
-use Conveyor\SocketHandlers\SocketMessageRouter;
+use Chocookies\Cookies;
 use Error;
-use Exception;
-use Ilex\SwoolePsr7\SwooleResponseConverter;
-use Ilex\SwoolePsr7\SwooleServerRequestConverter;
-use Kanata\Exceptions\UnauthorizedException;
-use Kanata\Http\Middlewares\CoreMiddleware;
-use Nyholm\Psr7\Factory\Psr17Factory;
-use PhpAmqpLib\Connection\AMQPStreamConnection;
-use Psr\Container\ContainerInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Slim\App;
+use Exception;
+use voku\helper\Hooks;
+use Swoole\Http\Server;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
-use Swoole\Http\Server;
 use Swoole\WebSocket\Frame;
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
+use Kanata\Http\Middlewares\CoreMiddleware;
+use Kanata\Http\Middlewares\FormMiddleware;
+use Ilex\SwoolePsr7\SwooleResponseConverter;
+use Kanata\Exceptions\UnauthorizedException;
+use Psr\Http\Message\ServerRequestInterface;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
 use Swoole\WebSocket\Server as WebSocketServer;
-use voku\helper\Hooks;
+use Conveyor\SocketHandlers\SocketMessageRouter;
+use Ilex\SwoolePsr7\SwooleServerRequestConverter;
+use Conveyor\SocketHandlers\Interfaces\SocketHandlerInterface;
+use Kanata\Http\Middlewares\SessionMiddleware;
 
 class Servers
 {
@@ -343,10 +347,6 @@ class Servers
         $server->set($server_settings);
 
         $server->on("start", function (Server $server) {
-            global $argv;
-
-            file_put_contents(PID_FILE, $server->master_pid);
-
             echo 'Swoole Server is started at http://' . $server->host . ':' . $server->port . PHP_EOL;
         });
 
@@ -356,28 +356,15 @@ class Servers
             $psr7Request = $requestConverter->createFromSwoole($swooleRequest);
 
             try {
-                /**
-                 * Action: http_middleware
-                 * Description: Allows HTTP middleware execution on Psr7 Request.
-                 * @param ServerRequestInterface $request
-                 */
-                $psr7Request = Hooks::getInstance()->apply_filters('http_middleware', $psr7Request);
+                $psr7Request = self::addMiddlewareHttpRequest($psr7Request);
+                $psr7Response = $app->handle($psr7Request);
             } catch (UnauthorizedException $e) {
                 $swooleResponse->status(403, 'Unauthorized procedure!');
-
-                /**
-                 * Action: unauthorized_view
-                 * Description: Customize unauthorized view.
-                 * @param string
-                 */
-                $unauthorized_view = Hooks::getInstance()->apply_filters('unauthorized_view', 'core::exceptions/unauthorized');
-
-                return $swooleResponse->end(container()->view->render($unauthorized_view));
+                return $swooleResponse->end(self::getUnauthorizedView());
             }
-            
-            $psr7Response = $app->handle($psr7Request);
+
             $converter = new SwooleResponseConverter($swooleResponse);
-            $converter->send($psr7Response);
+            $converter->send(self::processResponse($psr7Request, $psr7Response));
         }));
 
         /**
@@ -386,11 +373,63 @@ class Servers
          * Expected return: Server
          * @param Server $server
          */
-        $server = Hooks::getInstance()->apply_filters(
-            'http_server',
-            $server
-        );
+        $server = Hooks::getInstance()->apply_filters('http_server', $server);
 
         $server->start();
+    }
+
+    private static function getUnauthorizedView(): string
+    {
+        /**
+         * Action: unauthorized_view
+         * Description: Customize unauthorized view.
+         * @param string
+         */
+        $unauthorized_view = Hooks::getInstance()->apply_filters('unauthorized_view', 'core::exceptions/unauthorized');
+        return container()->view->render($unauthorized_view);
+    }
+
+    private static function addMiddlewareHttpRequest(ServerRequestInterface $psr7Request): ServerRequestInterface
+    {
+        /**
+         * Action: http_middleware
+         * Description: Allows HTTP middleware execution on Psr7 Request.
+         * @param ServerRequestInterface $request
+         */
+        $psr7Request = Hooks::getInstance()->apply_filters('http_middleware', $psr7Request);
+
+        /**
+         * Action: http_session_middleware
+         * Description: Enable/Disable Session Middleware to HTTP request.
+         * @param bool $active
+         */
+        if (Hooks::getInstance()->apply_filters('http_session_middleware', true)) {
+            $psr7Request = (new SessionMiddleware)($psr7Request);
+        }
+
+        /**
+         * Action: http_form_middleware
+         * Description: Enable/Disable Form Middleware to HTTP request, useful for cached input.
+         * @param bool $active
+         */
+        if (Hooks::getInstance()->apply_filters('http_form_middleware', true)) {
+            $psr7Request = (new FormMiddleware)($psr7Request);
+        }
+
+        return $psr7Request;
+    }
+
+    private static function processResponse(ServerRequestInterface $psr7Request, ResponseInterface $psr7Response)
+    {
+        Session::addCookiesToResponse($psr7Request, $psr7Response);
+
+        /**
+         * Action: intercept_http_response
+         * Description: Intercept Psr7 HTTP response.
+         * @param ResponseInterface
+         */
+        $psr7Response = Hooks::getInstance()->apply_filters('intercept_http_response', $psr7Response);
+
+        return $psr7Response;
     }
 }

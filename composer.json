@@ -42,7 +42,8 @@
         "greg0/lazer-database": "^2.0",
         "php-amqplib/php-amqplib": "^3.1",
         "psy/psysh": "@stable",
-        "danielstjules/stringy": "^3.1"
+        "danielstjules/stringy": "^3.1",
+        "lotharthesavior/chocookies": "^0.0"
     },
     "bin": [
         "start-kanata"
