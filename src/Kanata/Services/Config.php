@@ -10,6 +10,10 @@ class Config
 {
     public static function start(): void
     {
+        if (defined('SKIP_CONFIG_FOLDER')) {
+            return;
+        }
+
         $container = container();
         $config = [];
 

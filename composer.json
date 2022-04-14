@@ -51,12 +51,20 @@
     "require-dev": {
         "symfony/var-dumper": "^5.2",
         "phpunit/phpunit": "^9.2",
-        "mockery/mockery": "^1.4",
-        "codedungeon/phpunit-result-printer": "^0.30"
+        "codedungeon/phpunit-result-printer": "^0.30",
+        "fakerphp/faker": "^1.19",
+        "mockery/mockery": "^1.5"
     },
     "config": {
         "allow-plugins": {
             "wikimedia/composer-merge-plugin": true
         }
+    },
+    "suggest": {
+        "ext-openswoole": "This package requires at least one of Open Swoole or Swoole",
+        "ext-swoole": "This package requires at least one of Open Swoole or Swoole"
+    },
+    "scripts": {
+        "test": "./vendor/bin/phpunit"
     }
 }

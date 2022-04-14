@@ -2,7 +2,6 @@
 
 namespace Kanata\Services;
 
-use Chocookies\Cookies;
 use Error;
 use Slim\App;
 use Exception;

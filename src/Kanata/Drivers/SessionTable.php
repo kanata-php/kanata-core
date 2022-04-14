@@ -27,6 +27,11 @@ class SessionTable implements CacheInterface
         }
         return self::$instance;
     }
+    public static function destroyInstance(): void
+    {
+        self::$table->destroy();
+        self::$instance = null;
+    }
 
     protected function createTable(): Table
     {
@@ -35,6 +40,11 @@ class SessionTable implements CacheInterface
         $table->column('ttl', Table::TYPE_INT, 8);
         $table->create();
         return $table;
+    }
+
+    public static function getTable(): Table
+    {
+        return self::$table;
     }
 
     /**

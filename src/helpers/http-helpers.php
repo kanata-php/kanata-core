@@ -5,6 +5,68 @@ use Kanata\Services\Session;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+if (! function_exists('set_session')) {
+    /**
+     * Set session data in request.
+     *
+     * @return void
+     */
+    function set_session(ServerRequestInterface &$request, array $data): void
+    {
+        $request_data = $request->session;
+
+        $session_data  = SessionTable::getInstance()->get($request_data['id']) ?? [];
+
+        $session_data = array_merge($session_data, $data);
+
+        SessionTable::getInstance()->set($request_data['id'], $session_data);
+    }
+}
+
+if (! function_exists('get_session')) {
+    /**
+     * Get session data in request.
+     *
+     * @return mixed
+     */
+    function get_session(ServerRequestInterface &$request, ?string $key = null, $default = null): mixed
+    {
+        $data = $request->session;
+
+        $session_data  = SessionTable::getInstance()->get($data['id']) ?? [];
+
+        return array_get($session_data, $key, $default);
+    }
+}
+
+if (! function_exists('clear_session')) {
+    /**
+     * Clear session data in request.
+     * 
+     * @important only removes keys at the root of the session's array.
+     * @return void
+     */
+    function clear_session(ServerRequestInterface &$request, ?string $key = null): void
+    {
+        $request_data = $request->session;
+
+        if (null === $key) {
+            SessionTable::getInstance()->set($request_data['id'], []);
+            return;
+        }
+
+        $session_data  = SessionTable::getInstance()->get($request_data['id']);
+        
+        if (!isset($session_data[$key])) {
+            return;
+        }
+
+        unset($session_data[$key]);
+
+        SessionTable::getInstance()->set($request_data['id'], $session_data);
+    }
+}
+
 if (! function_exists('set_form_session')) {
     /**
      * Set session data in request.
@@ -13,16 +75,7 @@ if (! function_exists('set_form_session')) {
      */
     function set_form_session(ServerRequestInterface &$request, array $data): void
     {
-        $request_data = $request->session;
-
-        $session_data  = SessionTable::getInstance()->get($request_data['id']);
-
-        if (!isset($session_data['form'])) {
-            $session_data['form'] = [];
-        }
-        $session_data['form'][$request->getUri()->getPath()] = $data;
-
-        SessionTable::getInstance()->set($request_data['id'], $session_data);
+        set_session($request, ['form' => [$request->getUri()->getPath() => $data]]);
     }
 }
 
@@ -34,20 +87,7 @@ if (! function_exists('get_form_session')) {
      */
     function get_form_session(ServerRequestInterface $request): array
     {
-        $data = $request->session;
-
-        $path = $request->getUri()->getPath();
-
-        $session_data  = SessionTable::getInstance()->get($data['id']);
-
-        if (
-            !isset($session_data['form'])
-            || !isset($session_data['form'][$path])
-        ) {
-            return [];
-        }
-
-        return $session_data['form'][$path];
+        return get_session($request, 'form.' . $request->getUri()->getPath(), []);
     }
 }
 
@@ -87,9 +127,7 @@ if (! function_exists('set_flash_message')) {
             $message = array_merge($message, $session_data['flash-message']);
         }
 
-        $session_data['flash-message'] = $message;
-
-        SessionTable::getInstance()->set($data['id'], $session_data);
+        set_session($request, ['flash-message' => $message]);
     }
 }
 

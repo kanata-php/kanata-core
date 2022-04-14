@@ -44,6 +44,10 @@ class PluginLoader
      */
     public function load(): void
     {
+        if (defined('SKIP_PLUGINS_FOLDER')) {
+            return;
+        }
+
         $main_directory = base_path() . 'content/plugins';
         $directory = new RecursiveDirectoryIterator($main_directory, FilesystemIterator::SKIP_DOTS);
         $iterator = new IteratorIterator($directory);

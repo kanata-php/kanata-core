@@ -61,7 +61,7 @@ class Session implements SessionInterface
 
         $current_session = $session_table->get($session_data['id']);
 
-        return $current_session;
+        return $current_session ?? [];
     }
 
     private static function parseCookie(string $data)

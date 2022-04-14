@@ -78,6 +78,13 @@ class Bootstrap
         Autoloader::startHelpers();
     }
 
+    public static function bootstrapPhpunit(): void
+    {
+        self::processCore(['skip_console' => true]);
+        Autoloader::startConstants();
+        Autoloader::startHelpers();
+    }
+
     public static function processCore(array $args = []): void
     {
         global $app, $container;
