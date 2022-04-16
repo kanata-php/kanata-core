@@ -178,6 +178,18 @@ if (! function_exists('add_filter')) {
     }
 }
 
+if (! function_exists('apply_filters')) {
+    /**
+     * @param string $hook
+     * @param mixed $params
+     * @return mixed
+     */
+    function apply_filters(string $hook, mixed $params): mixed
+    {
+        return Hooks::getInstance()->apply_filters($hook, $params);
+    }
+}
+
 if (! function_exists('add_action')) {
     /**
      * @param string $hook
@@ -190,15 +202,15 @@ if (! function_exists('add_action')) {
     }
 }
 
-if (! function_exists('add_action')) {
+if (! function_exists('do_action')) {
     /**
      * @param string $hook
      * @param $callback
      * @return void
      */
-    function add_action(string $hook, $callback): void
+    function do_action(string $hook, $callback): void
     {
-        Hooks::getInstance()->add_action($hook, $callback);
+        Hooks::getInstance()->do_action($hook, $callback);
     }
 }
 

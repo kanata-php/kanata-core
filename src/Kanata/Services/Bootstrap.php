@@ -111,5 +111,7 @@ class Bootstrap
         if (!isset($args['skip_plugins'])) {
             Autoloader::startPlugins();
         }
+
+        Autoloader::startPluginHelpers();
     }
 }

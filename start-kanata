@@ -40,9 +40,10 @@ use voku\helper\Hooks;
 // -----------------------------------------------------
 
 $fresh = get_input()->getOption('fresh');
+$fresh_plugins = get_input()->getOption('fresh-plugins');
 
 // plugins
-if ($fresh && mysql_table_exists(DB_DATABASE, \Kanata\Models\Plugin::TABLE_NAME)) {
+if ($fresh_plugins && mysql_table_exists(DB_DATABASE, \Kanata\Models\Plugin::TABLE_NAME)) {
     container()->db->schema()->drop(\Kanata\Models\Plugin::TABLE_NAME);
 }
 if (!mysql_table_exists(DB_DATABASE, \Kanata\Models\Plugin::TABLE_NAME)) {

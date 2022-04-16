@@ -22,6 +22,13 @@ class Autoloader
         include_once __DIR__ . '/../../helpers.php';
     }
 
+    public static function startPluginHelpers(): void
+    {
+        foreach(apply_filters('add_helpers', []) as $helper) {
+            include_once $helper;
+        }
+    }
+
     public static function startPlugins(): void
     {
         $connection = container()->db;

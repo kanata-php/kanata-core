@@ -2,13 +2,12 @@
 
 namespace Kanata\Services;
 
+use Kanata\Exceptions\ErrorHandler;
+use Kanata\Http\Controllers\DocumentationController;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Routing\RouteCollectorProxy;
 use voku\helper\Hooks;
-use Kanata\Exceptions\ErrorHandler;
-use Kanata\Http\Controllers\AdminController;
-use Kanata\Http\Controllers\DocumentationController;
 
 class Routes
 {
@@ -32,14 +31,10 @@ class Routes
             $group = Hooks::getInstance()->apply_filters('routes', $group);
 
             $group->get('/', function (Request $request, Response $response) {
-                return view($response, 'core::home', [
-                    'is_logged' => is_logged($request),
-                ]);
+                return view($response, 'core::home', []);
             })->setName('home');
 
-            $group->get('/docs', [DocumentationController::class, 'index'])->setName('login');
-
-            $group->get('/admin', [AdminController::class, 'index'])->setName('admin');
+            $group->get('/docs', [DocumentationController::class, 'index'])->setName('docs');
         })->add($errorMiddleware);
     }
 }

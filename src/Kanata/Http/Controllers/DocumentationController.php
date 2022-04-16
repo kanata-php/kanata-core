@@ -10,8 +10,6 @@ class DocumentationController
 {
     public function index(Request $request, Response $response)
     {
-        return view($response, 'core::docs/index', [
-            'is_logged' => is_logged($request),
-        ]);
+        return view($response, 'core::docs/index', []);
     }
 }

@@ -43,7 +43,8 @@
         "php-amqplib/php-amqplib": "^3.1",
         "psy/psysh": "@stable",
         "danielstjules/stringy": "^3.1",
-        "lotharthesavior/chocookies": "^0.0"
+        "lotharthesavior/chocookies": "^0.0",
+        "firebase/php-jwt": "^6.1"
     },
     "bin": [
         "start-kanata"

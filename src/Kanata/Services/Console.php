@@ -34,6 +34,9 @@ class Console
             // fresh
             new InputOption(FRESH_CONSOLE_OPTION, null, InputOption::VALUE_NONE),
 
+            // fresh-plugins
+            new InputOption(FRESH_PLUGINS_CONSOLE_OPTION, null, InputOption::VALUE_NONE),
+
             // arguments
             new InputArgument('arg', InputArgument::OPTIONAL),
             new InputArgument('arg2', InputArgument::OPTIONAL),

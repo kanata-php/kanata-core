@@ -141,6 +141,13 @@ if (!defined('FRESH_CONSOLE_OPTION')) {
     define('FRESH_CONSOLE_OPTION', 'fresh');
 }
 
+if (!defined('FRESH_PLUGINS_CONSOLE_OPTION')) {
+    /**
+     * Specify that "start-kanata" will run migrations fresh including plugins.
+     */
+    define('FRESH_PLUGINS_CONSOLE_OPTION', 'fresh-plugins');
+}
+
 // -----------------------------------------------------
 // JSON db
 // -----------------------------------------------------

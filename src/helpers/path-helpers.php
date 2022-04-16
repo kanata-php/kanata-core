@@ -11,11 +11,12 @@ if (! function_exists('base_path')) {
     /**
      * Retrieve base path of the project.
      *
+     * @param string $asset
      * @return string
      */
-    function base_path(): string
+    function base_path(string $asset = ''): string
     {
-        return trailingslashit(ROOT_FOLDER);
+        return trailingslashit(ROOT_FOLDER) . $asset;
     }
 }
 
@@ -35,11 +36,12 @@ if (! function_exists('public_path')) {
     /**
      * Retrieve public path of the project.
      *
+     * @param string $asset
      * @return string
      */
-    function public_path(): string
+    function public_path(string $asset = ''): string
     {
-        return base_path() . 'public/';
+        return base_path() . 'public/' . $asset;
     }
 }
 

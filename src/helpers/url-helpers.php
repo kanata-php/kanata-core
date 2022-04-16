@@ -2,6 +2,11 @@
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use Slim\Exception\HttpNotFoundException;
+use Slim\Interfaces\RouteInterface;
+use Slim\Routing\RouteCollector;
+use Slim\Routing\RouteContext;
+use Slim\Routing\RouteParser;
 
 if (! function_exists('previous_url')) {
     /**
@@ -67,10 +72,11 @@ if (! function_exists('base_url')) {
     /**
      * Get base url of the system.
      *
+     * @param string $asset
      * @return string
      * @throws Exception
      */
-    function base_url(): string
+    function base_url(string $asset = ''): string
     {
         $url = config('app.app-url');
 
@@ -80,7 +86,7 @@ if (! function_exists('base_url')) {
 
         $protocol = env('HTTP_SERVER_SSL') ? 'https://' : 'http://';
 
-        return $protocol . $url;
+        return $protocol . $url . $asset;
     }
 }
 
@@ -91,17 +97,51 @@ if (! function_exists('route')) {
      * @param string $name
      * @param array $params
      * @param array $urlQuery
+     * @param ?Request $request
      * @return string
      * @throws Exception
      */
     function route(string $name, array $params = [], array $urlQuery = [], ?Request $request = null): string
     {
         global $app;
-        $routeParser = $app->getRouteCollector()->getRouteParser();
-        if (null !== $request) {
-            return $routeParser->fullUrlFor($request->getUri(), $name, $params, $urlQuery);
-        } else {
-            return $routeParser->urlFor($name, $params, $urlQuery);
+
+        /** @var RouteCollector $routeCollector */
+        $routeCollector = $app->getRouteCollector();
+
+        /** @var RouteParser $routeParser */
+        $routeParser = $routeCollector->getRouteParser();
+
+        try {
+            if (null !== $request) {
+                return $routeParser->fullUrlFor($request->getUri(), $name, $params, $urlQuery);
+            } else {
+                return $routeParser->urlFor($name, $params, $urlQuery);
+            }
+        } catch (RuntimeException $e) {
+            throw new Exception('It seems you invoked a route that doesn\'t exist at the url-helper! Exception: ' . $e->getMessage());
         }
+    }
+}
+
+if (! function_exists('current_route')) {
+    /**
+     * Retrieve current route name.
+     *
+     * @param string $name
+     * @param array $params
+     * @param array $urlQuery
+     * @return RouteInterface
+     * @throws HttpNotFoundException
+     */
+    function current_route(Request $request): RouteInterface
+    {
+        $routeContext = RouteContext::fromRequest($request);
+        $route = $routeContext->getRoute();
+
+        if (empty($route)) {
+            throw new HttpNotFoundException($request);
+        }
+
+        return $route;
     }
 }

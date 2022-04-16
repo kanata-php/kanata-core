@@ -21,5 +21,3 @@ include_once __DIR__ . '/helpers/plugin-helpers.php';
 include_once __DIR__ . '/helpers/database-helpers.php';
 
 include_once __DIR__ . '/helpers/url-helpers.php';
-
-include_once __DIR__ . '/helpers/auth-helpers.php';
