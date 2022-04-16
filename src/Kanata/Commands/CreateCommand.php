@@ -20,10 +20,8 @@ class CreateCommand extends Command
 
     protected function configure(): void
     {
-        $this->setHelp('This command generate a new command skeleton for your Kanata Plugin.');
-
         $this
-            ->setHelp('This command activates a plugin.')
+            ->setHelp('This command generate a new command skeleton for your Kanata Plugin.')
             ->setDefinition(
                 new InputDefinition([
                     new InputArgument('name', InputArgument::REQUIRED, 'The command name.'),
@@ -63,7 +61,8 @@ class CreateCommand extends Command
         }
 
         $io->success('Command Successfully created at ' . $commandsPath . '/' . $commandName . '.php');
-        $io->info('Don\'t forget to register your command through the hoot "commands" !');
+        $io->info('Don\'t forget to register your command through the hook "commands" !');
+        $io->info('Find more information here: https://github.com/kanata-php/kanata#commands');
         return Command::SUCCESS;
     }
 
