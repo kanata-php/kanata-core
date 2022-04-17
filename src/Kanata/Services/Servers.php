@@ -159,6 +159,15 @@ class Servers
 
         $websocket->on('open', function (WebSocketServer $server, Request $request) {
             echo "WS Opened: " . $request->fd . PHP_EOL;
+
+            /**
+             * Action: socket_start_checkpoint
+             * Description: Checkpoint for websocket connection opened.
+             * Expected return: void
+             * @param WebSocketServer $server
+             * @param Request $request
+             */
+            do_action('socket_start_checkpoint', [$server, $request]);
         });
 
         $websocket->on('message', function (WebSocketServer $server, Frame $frame) use ($persistence) {
@@ -169,12 +178,14 @@ class Servers
              * Description: Important for Socket Actions specifications via plugins.
              * Expected return: SocketHandlerInterface
              * @param SocketHandlerInterface $socketRouter
-             * @param ContainerInterface     $container
+             * @param ContainerInterface $container
              */
-            $socketRouter = Hooks::getInstance()->apply_filters(
+            $socketRouter = apply_filters(
                 'socket_actions',
-                new SocketMessageRouter($persistence),
-                container()
+                [
+                    new SocketMessageRouter($persistence),
+                    container(),
+                ]
             );
 
             $socketRouter($frame->data, $frame->fd, $server);

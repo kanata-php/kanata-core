@@ -27,6 +27,7 @@ class SessionTable implements CacheInterface
         }
         return self::$instance;
     }
+
     public static function destroyInstance(): void
     {
         self::$table->destroy();

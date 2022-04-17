@@ -24,7 +24,7 @@ class Autoloader
 
     public static function startPluginHelpers(): void
     {
-        foreach(apply_filters('add_helpers', []) as $helper) {
+        foreach(apply_filters('add_helpers', [[]]) as $helper) {
             include_once $helper;
         }
     }

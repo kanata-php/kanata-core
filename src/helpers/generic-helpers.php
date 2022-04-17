@@ -181,12 +181,12 @@ if (! function_exists('add_filter')) {
 if (! function_exists('apply_filters')) {
     /**
      * @param string $hook
-     * @param mixed $params
+     * @param array $params Array of arguments, as an indexed array. e.g.: ['key' => 'value'].
      * @return mixed
      */
-    function apply_filters(string $hook, mixed $params): mixed
+    function apply_filters(string $hook, array $params): mixed
     {
-        return Hooks::getInstance()->apply_filters($hook, $params);
+        return call_user_func_array([Hooks::getInstance(), 'apply_filters'], array_merge([$hook], $params));
     }
 }
 
@@ -194,23 +194,25 @@ if (! function_exists('add_action')) {
     /**
      * @param string $hook
      * @param $callback
+     * @param int $priority
+     * @param $include_path
      * @return mixed
      */
-    function add_action(string $hook, $callback): mixed
+    function add_action(string $hook, $callback, $priority = Hooks::PRIORITY_NEUTRAL, $include_path = null): mixed
     {
-        return Hooks::getInstance()->add_action($hook, $callback);
+        return Hooks::getInstance()->add_action($hook, $callback, $priority, $include_path);
     }
 }
 
 if (! function_exists('do_action')) {
     /**
      * @param string $hook
-     * @param $callback
+     * @param array $params
      * @return void
      */
-    function do_action(string $hook, $callback): void
+    function do_action(string $hook, array $params): void
     {
-        Hooks::getInstance()->do_action($hook, $callback);
+        call_user_func_array([Hooks::getInstance(), 'do_action'], array_merge([$hook], $params));
     }
 }
 
