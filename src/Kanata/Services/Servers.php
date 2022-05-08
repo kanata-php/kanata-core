@@ -188,7 +188,11 @@ class Servers
                 ]
             );
 
-            $socketRouter($frame->data, $frame->fd, $server);
+            try {
+                $socketRouter($frame->data, $frame->fd, $server);
+            } catch (Exception $e) {
+                logger()->error('There was a problem while handling WS Message: ' . $e->getMessage());
+            }
         });
 
 
