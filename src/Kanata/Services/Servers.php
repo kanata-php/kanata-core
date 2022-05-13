@@ -5,6 +5,8 @@ namespace Kanata\Services;
 use Error;
 use Slim\App;
 use Exception;
+use Swoole\Table;
+use Swoole\Timer;
 use voku\helper\Hooks;
 use Swoole\Http\Server;
 use Swoole\Http\Request;
@@ -27,9 +29,18 @@ use Kanata\Http\Middlewares\SessionMiddleware;
 
 class Servers
 {
+    // servers
     const HTTP = 'http';
     const WEBSOCKET = 'websocket';
     const QUEUE = 'queue';
+
+    // events table
+    const EVENTS_TABLE = 'events-table';
+
+    // events
+    const WS_MESSAGE_RECEIVED = 'ws-message-received';
+    const WS_NEW_CONNECTION = 'ws-new-connection';
+    const WS_CONNECTION_CLOSED = 'ws-connection-closed';
 
     public static function start(string $server_type = self::HTTP): void
     {
@@ -160,6 +171,8 @@ class Servers
         $websocket->on('open', function (WebSocketServer $server, Request $request) {
             echo "WS Opened: " . $request->fd . PHP_EOL;
 
+            dispatch_event(self::WS_NEW_CONNECTION, json_encode(['fd' => $request->fd]));
+
             /**
              * Action: socket_start_checkpoint
              * Description: Checkpoint for websocket connection opened.
@@ -172,6 +185,8 @@ class Servers
 
         $websocket->on('message', function (WebSocketServer $server, Frame $frame) use ($persistence) {
             echo 'Received message (' . $frame->fd . '): ' . $frame->data . PHP_EOL;
+
+            dispatch_event(self::WS_MESSAGE_RECEIVED, json_encode(['fd' => $frame->fd]));
 
             /**
              * Action: socket_actions
@@ -202,6 +217,9 @@ class Servers
         });
 
         $websocket->on('close', function ($server, $fd) {
+            echo "WS Close: " . $fd . PHP_EOL;
+
+            dispatch_event(self::WS_CONNECTION_CLOSED, json_encode(['fd' => $fd]));
 
             /**
              * Action: ws_close
@@ -210,8 +228,6 @@ class Servers
              * @param int $fd
              */
             Hooks::getInstance()->do_action('ws_close', $fd);
-
-            echo "WS Close: " . $fd . PHP_EOL;
         });
 
         /**
@@ -224,6 +240,8 @@ class Servers
             'websocket_server',
             $websocket
         );
+
+        self::startEventsService();
 
         $websocket->start();
     }
@@ -389,7 +407,44 @@ class Servers
          */
         $server = Hooks::getInstance()->apply_filters('http_server', $server);
 
+        self::startEventsService();
+
         $server->start();
+    }
+
+    /**
+     * Start Events Service. This Service is available per Server. This means that
+     * this won't be reachable by HTTP if dispatched at the WebSocket Server context.
+     *
+     * @return void
+     */
+    private static function startEventsService()
+    {
+        // events table
+        $table = new Table(1024);
+        $table->column('event_key', Table::TYPE_STRING, 40);
+        $table->column('event_data', Table::TYPE_STRING, 250);
+        $table->column('timestamp', Table::TYPE_INT, 20);
+        $table->create();
+        container()->set(self::EVENTS_TABLE, $table);
+
+        // timer
+        Timer::tick(EVENT_TICK_INTERVAL, function() use ($table) {
+            $daemonEvents = get_events_list();
+
+            foreach($table as $key => $event) {
+                logger()->debug('Event dispatched: ' . json_encode($event));
+
+                if (!isset($daemonEvents[$event['event_key']])) {
+                    continue;
+                }
+
+                foreach ($daemonEvents[$event['event_key']] as $handler) {
+                    $handler($event['event_data']);
+                }
+                $table->del($key);
+            }
+        });
     }
 
     private static function getUnauthorizedView(): string

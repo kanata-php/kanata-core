@@ -63,6 +63,13 @@ if (!defined('WS_TICK_INTERVAL')) {
     define('WS_TICK_INTERVAL', env('WS_TICK_INTERVAL', 1000));
 }
 
+if (!defined('EVENT_TICK_INTERVAL')) {
+    /**
+     * The Event Tick interval.
+     */
+    define('EVENT_TICK_INTERVAL', env('EVENT_TICK_INTERVAL', 1000));
+}
+
 if (!defined('WS_MESSAGE_ACTION')) {
     /**
      * This serves for communication between services with the ws server.
