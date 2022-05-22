@@ -241,8 +241,6 @@ class Servers
             $websocket
         );
 
-        self::startEventsService();
-
         $websocket->start();
     }
 
@@ -407,44 +405,7 @@ class Servers
          */
         $server = Hooks::getInstance()->apply_filters('http_server', $server);
 
-        self::startEventsService();
-
         $server->start();
-    }
-
-    /**
-     * Start Events Service. This Service is available per Server. This means that
-     * this won't be reachable by HTTP if dispatched at the WebSocket Server context.
-     *
-     * @return void
-     */
-    private static function startEventsService()
-    {
-        // events table
-        $table = new Table(1024);
-        $table->column('event_key', Table::TYPE_STRING, 40);
-        $table->column('event_data', Table::TYPE_STRING, 250);
-        $table->column('timestamp', Table::TYPE_INT, 20);
-        $table->create();
-        container()->set(self::EVENTS_TABLE, $table);
-
-        // timer
-        Timer::tick(EVENT_TICK_INTERVAL, function() use ($table) {
-            $daemonEvents = get_events_list();
-
-            foreach($table as $key => $event) {
-                logger()->debug('Event dispatched: ' . json_encode($event));
-
-                if (!isset($daemonEvents[$event['event_key']])) {
-                    continue;
-                }
-
-                foreach ($daemonEvents[$event['event_key']] as $handler) {
-                    $handler($event['event_data']);
-                }
-                $table->del($key);
-            }
-        });
     }
 
     private static function getUnauthorizedView(): string
