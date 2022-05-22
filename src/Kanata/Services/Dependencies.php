@@ -141,5 +141,16 @@ class Dependencies
                 QUEUE_SERVER_PASSWORD
             );
         };
+
+
+        /**
+         * -----------------------------------------------------------
+         * Proxy
+         * -----------------------------------------------------------
+         */
+
+        $container['proxy'] = function ($c) {
+            return  new Proxy();
+        };
     }
 }

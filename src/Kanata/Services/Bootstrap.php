@@ -13,6 +13,7 @@ use Kanata\Commands\DeactivatePluginCommand;
 use Kanata\Commands\DebuggerCommand;
 use Kanata\Commands\InfoCommand;
 use Kanata\Commands\CreatePluginCommand;
+use Swoole\Timer;
 use Symfony\Component\Console\Application;
 use voku\helper\Hooks;
 
@@ -45,7 +46,9 @@ class Bootstrap
     {
         $application = new Application();
         try {
-            self::processCore(['skip_console' => true]);
+            self::processCore([
+                'skip_console' => true,
+            ]);
         } catch (Exception $e) {
             echo PHP_EOL . $e->getMessage() . PHP_EOL . PHP_EOL;
             return;
@@ -88,6 +91,8 @@ class Bootstrap
     public static function processCore(array $args = []): void
     {
         global $app, $container;
+
+        Timer::set(['enable_coroutine' => true]);
 
         if (isset($args['only_plugins'])) {
             Autoloader::startPlugins();

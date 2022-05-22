@@ -2,6 +2,7 @@
   <testsuites>
     <testsuite name="helpers">
       <file>tests/HttpHelpersTest.php</file>
+      <file>tests/EventsTest.php</file>
     </testsuite>
   </testsuites>
 </phpunit>

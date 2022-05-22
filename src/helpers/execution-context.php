@@ -65,3 +65,15 @@ if (! function_exists('is_queue_execution')) {
         return get_input()->getOption('queue');
     }
 }
+
+if (! function_exists('is_shell_execution')) {
+    /**
+     * Says if the current execution is shell (psyshell) context.
+     *
+     * @return bool
+     */
+    function is_shell_execution(): bool
+    {
+        return get_input()->getFirstArgument() === 'shell';
+    }
+}

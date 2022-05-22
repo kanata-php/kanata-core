@@ -2,8 +2,11 @@
 
 declare(strict_types=1);
 
+namespace Tests;
+
 use Faker\Factory;
 use Faker\Generator;
+use Mockery;
 use PHPUnit\Framework\TestCase;
 use Kanata\Drivers\SessionTable;
 use Psr\Http\Message\UriInterface;
