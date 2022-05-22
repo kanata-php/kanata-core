@@ -9,7 +9,7 @@ if (! function_exists('get_plugins')) {
      * @return array
      */
     function get_plugins(): array {
-        return PluginRepository::all();
+        return PluginRepository::all()->toArray();
     }
 }
 
