@@ -30,6 +30,6 @@ if (! function_exists('add_event_listener')) {
      * @return void
      */
     function add_event_listener(string $event, callable $callback): void {
-        Events::addEventObserver($event, $callback);
+        Events::addEventListener($event, $callback);
     }
 }

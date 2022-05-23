@@ -29,7 +29,7 @@ class Events
         return $instance;
     }
 
-    public static function addEventObserver(string $event, callable $callback): void
+    public static function addEventListener(string $event, callable $callback): void
     {
         if (!isset(self::getInstance()->listeners[$event])) {
             self::getInstance()->listeners[$event] = [];
