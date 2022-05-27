@@ -171,7 +171,7 @@ class Servers
         $websocket->on('open', function (WebSocketServer $server, Request $request) {
             echo "WS Opened: " . $request->fd . PHP_EOL;
 
-            dispatch_event(self::WS_NEW_CONNECTION, json_encode(['fd' => $request->fd]));
+            // dispatch_event(self::WS_NEW_CONNECTION, json_encode(['fd' => $request->fd]));
 
             /**
              * Action: socket_start_checkpoint
@@ -186,7 +186,7 @@ class Servers
         $websocket->on('message', function (WebSocketServer $server, Frame $frame) use ($persistence) {
             echo 'Received message (' . $frame->fd . '): ' . $frame->data . PHP_EOL;
 
-            dispatch_event(self::WS_MESSAGE_RECEIVED, json_encode(['fd' => $frame->fd]));
+            // dispatch_event(self::WS_MESSAGE_RECEIVED, json_encode(['fd' => $frame->fd]));
 
             /**
              * Action: socket_actions
@@ -219,7 +219,7 @@ class Servers
         $websocket->on('close', function ($server, $fd) {
             echo "WS Close: " . $fd . PHP_EOL;
 
-            dispatch_event(self::WS_CONNECTION_CLOSED, json_encode(['fd' => $fd]));
+            // dispatch_event(self::WS_CONNECTION_CLOSED, json_encode(['fd' => $fd]));
 
             /**
              * Action: ws_close
