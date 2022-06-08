@@ -60,6 +60,13 @@ class PluginLoader
 
             $pluginPath = $info->getPathname();
             $plugin = $this->pluginRepository->registerIfNotRegistered($pluginPath);
+
+            // this might happen when change environment
+            if (null !== $plugin && !file_exists($plugin->path) && file_exists($pluginPath)) {
+                $this->unregisterIfNotFound([$pluginsFound]);
+                $plugin = $this->pluginRepository->registerIfNotRegistered($pluginPath);
+            }
+
             $this->loadPlugin($plugin);
             $pluginsFound[] = $plugin?->id;
         }

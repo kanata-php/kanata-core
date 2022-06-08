@@ -4,6 +4,7 @@ namespace Kanata\Commands;
 
 use Exception;
 use Kanata\Commands\Traits\LogoTrait;
+use Kanata\Commands\Traits\PluginHelpersTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -14,7 +15,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class DeactivatePluginCommand extends Command
 {
-    use LogoTrait;
+    use LogoTrait, PluginHelpersTrait;
 
     protected static $defaultName = 'plugin:deactivate';
 
@@ -24,7 +25,7 @@ class DeactivatePluginCommand extends Command
             ->setHelp('This command deactivates a plugin.')
             ->setDefinition(
                 new InputDefinition([
-                    new InputArgument('plugin-name', InputArgument::REQUIRED, 'Which plugin to deactivate.'),
+                    new InputArgument('plugin-name', InputArgument::OPTIONAL, 'Which plugin to deactivate.'),
                 ])
             );
     }
@@ -36,6 +37,10 @@ class DeactivatePluginCommand extends Command
         $this->writeLogo($output);
 
         $pluginName = $input->getArgument('plugin-name');
+
+        if (null === $pluginName) {
+            $pluginName = $this->interactForPluginName($io);
+        }
 
         try {
             $result = deactivate_plugin($pluginName);

@@ -11,9 +11,11 @@ class DebuggerCommand extends Command
 {
     protected static $defaultName = 'debug';
 
+    protected static $defaultDescription = 'This command starts the debugger server.';
+
     protected function configure(): void
     {
-        $this->setHelp('This command starts the debugger server.');
+        $this->setHelp(self::$defaultDescription);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

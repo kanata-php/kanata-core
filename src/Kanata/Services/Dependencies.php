@@ -7,7 +7,9 @@ use Kanata\Drivers\DbCapsule;
 use Kanata\Repositories\PluginRepository;
 use League\Flysystem\Adapter\Local;
 use League\Plates\Engine;
+use Monolog\Formatter\LogstashFormatter;
 use Monolog\Handler\StreamHandler;
+use Monolog\Handler\SyslogUdpHandler;
 use Monolog\Logger;
 use League\Flysystem\Filesystem as Flysystem;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
@@ -29,6 +31,7 @@ class Dependencies
             $logger = new Logger('kanata-logger');
             $file_handler = new StreamHandler(storage_path() . 'logs/app.log');
             $logger->pushHandler($file_handler);
+
             return $logger;
         };
 

@@ -13,9 +13,11 @@ class InfoCommand extends Command
 
     protected static $defaultName = 'info';
 
+    protected static $defaultDescription = 'This command gives you information about your Kanata Application.';
+
     protected function configure(): void
     {
-        $this->setHelp('This command gives you information about your Kanata Application.');
+        $this->setHelp(self::$defaultDescription);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

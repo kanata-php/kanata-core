@@ -4,8 +4,12 @@ namespace Kanata\Services;
 
 use Exception;
 use Kanata\Commands\CreateCommand;
+use Kanata\Commands\ListPluginCommand;
 use Kanata\Commands\PublishPluginCommand;
 use Kanata\Commands\ShellCommand;
+use Kanata\Commands\StartHttpServerCommand;
+use Kanata\Commands\StartMessageServiceCommand;
+use Kanata\Commands\StartWsServerCommand;
 use Slim\App;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Kanata\Commands\ActivatePluginCommand;
@@ -19,49 +23,29 @@ use voku\helper\Hooks;
 
 class Bootstrap
 {
-    public static function startServers(): void
-    {
-        global $argv;
-
-        $coreArgs = [];
-
-        switch (true) {
-            case in_array('--websocket', $argv):
-                $server_type = Servers::WEBSOCKET;
-                break;
-            case in_array('--queue', $argv):
-                $server_type = Servers::QUEUE;
-                break;
-            default:
-                // $coreArgs = ['start_session' => true];
-                $server_type = Servers::HTTP;
-        }
-
-        self::processCore($coreArgs);
-        Routes::start();
-        Servers::start($server_type);
-    }
-
     public static function startConsole(): void
     {
         $application = new Application();
+
         try {
-            self::processCore([
-                'skip_console' => true,
-            ]);
+            self::processCore();
         } catch (Exception $e) {
             echo PHP_EOL . $e->getMessage() . PHP_EOL . PHP_EOL;
             return;
         }
 
-        $application->add(new InfoCommand());
-        $application->add(new DebuggerCommand());
-        $application->add(new CreatePluginCommand());
-        $application->add(new ActivatePluginCommand());
-        $application->add(new DeactivatePluginCommand());
-        $application->add(new ShellCommand());
-        $application->add(new PublishPluginCommand());
-        $application->add(new CreateCommand());
+        $application->add(new InfoCommand);
+        $application->add(new StartHttpServerCommand);
+        $application->add(new StartWsServerCommand);
+        $application->add(new StartMessageServiceCommand);
+        $application->add(new DebuggerCommand);
+        $application->add(new ListPluginCommand);
+        $application->add(new CreatePluginCommand);
+        $application->add(new ActivatePluginCommand);
+        $application->add(new DeactivatePluginCommand);
+        $application->add(new ShellCommand);
+        $application->add(new PublishPluginCommand);
+        $application->add(new CreateCommand);
 
         /**
          * Action: commands
@@ -83,7 +67,7 @@ class Bootstrap
 
     public static function bootstrapPhpunit(): void
     {
-        self::processCore(['skip_console' => true]);
+        self::processCore();
         Autoloader::startConstants();
         Autoloader::startHelpers();
     }
@@ -94,11 +78,6 @@ class Bootstrap
 
         Timer::set(['enable_coroutine' => true]);
 
-        if (isset($args['only_plugins'])) {
-            Autoloader::startPlugins();
-            return;
-        }
-
         Autoloader::startEnv();
         Autoloader::startConstants();
         Autoloader::startHelpers();
@@ -106,17 +85,10 @@ class Bootstrap
         $container = new Container(['settings' => $_ENV]);
         $app = new App(new Psr17Factory, $container);
 
-        if (!isset($args['skip_console'])) {
-            Console::start();
-        }
-
         Dependencies::start();
         Config::start();
 
-        if (!isset($args['skip_plugins'])) {
-            Autoloader::startPlugins();
-        }
-
+        Autoloader::startPlugins();
         Autoloader::startPluginHelpers();
     }
 }

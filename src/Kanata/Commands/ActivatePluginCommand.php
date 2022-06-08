@@ -4,17 +4,17 @@ namespace Kanata\Commands;
 
 use Exception;
 use Kanata\Commands\Traits\LogoTrait;
+use Kanata\Commands\Traits\PluginHelpersTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class ActivatePluginCommand extends Command
 {
-    use LogoTrait;
+    use LogoTrait, PluginHelpersTrait;
 
     protected static $defaultName = 'plugin:activate';
 
@@ -24,7 +24,7 @@ class ActivatePluginCommand extends Command
             ->setHelp('This command activates a plugin.')
             ->setDefinition(
                 new InputDefinition([
-                    new InputArgument('plugin-name', InputArgument::REQUIRED, 'Which plugin to activate.'),
+                    new InputArgument('plugin-name', InputArgument::OPTIONAL, 'Which plugin to activate.'),
                 ])
             );
     }
@@ -36,6 +36,10 @@ class ActivatePluginCommand extends Command
         $this->writeLogo($output);
 
         $pluginName = $input->getArgument('plugin-name');
+
+        if (null === $pluginName) {
+            $pluginName = $this->interactForPluginName($io);
+        }
 
         try {
             $result = activate_plugin($pluginName);

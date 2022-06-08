@@ -30,11 +30,10 @@ if (! function_exists('is_websocket_execution')) {
      */
     function is_websocket_execution(): bool
     {
-        if (!get_input()->hasOption('websocket')) {
-            return false;
-        }
+        global $argv;
 
-        return get_input()->getOption('websocket');
+        return 'ws' === container()->context
+            || 'ws' === array_get($argv, 1, false);
     }
 }
 
@@ -45,8 +44,10 @@ if (! function_exists('is_http_execution')) {
      */
     function is_http_execution(): bool
     {
-        return !is_websocket_execution()
-            && !is_queue_execution();
+        global $argv;
+
+        return 'http' === container()->context
+            || 'http' === array_get($argv, 1, false);
     }
 }
 
@@ -58,11 +59,10 @@ if (! function_exists('is_queue_execution')) {
      */
     function is_queue_execution(): bool
     {
-        if (!get_input()->hasOption('queue')) {
-            return false;
-        }
+        global $argv;
 
-        return get_input()->getOption('queue');
+        return 'message' === container()->context
+            || 'message' === array_get($argv, 1, false);
     }
 }
 
@@ -74,6 +74,6 @@ if (! function_exists('is_shell_execution')) {
      */
     function is_shell_execution(): bool
     {
-        return get_input()->getFirstArgument() === 'shell';
+        return container()->context === 'shell';
     }
 }
