@@ -28,19 +28,23 @@ if (!defined('PHPUNIT_COMPOSER_INSTALL')) {
 require PHPUNIT_COMPOSER_INSTALL;
 
 use Illuminate\Database\Schema\Blueprint;
+use Symfony\Component\Console\Input\InputDefinition;
+use Symfony\Component\Console\Input\InputOption;
 use voku\helper\Hooks;
 
-\Kanata\Services\Autoloader::startEnv();
-\Kanata\Services\Autoloader::startConstants();
-\Kanata\Services\Autoloader::startHelpers();
 \Kanata\Services\Bootstrap::processCore(['skip_plugins' => true]);
 
 // -----------------------------------------------------
 // prepare json dbs
 // -----------------------------------------------------
 
-$fresh = get_input()->getOption('fresh');
-$fresh_plugins = get_input()->getOption('fresh-plugins');
+$definition = new InputDefinition([
+    new InputOption(FRESH_CONSOLE_OPTION, null, InputOption::VALUE_NONE),
+    new InputOption(FRESH_PLUGINS_CONSOLE_OPTION, null, InputOption::VALUE_NONE),
+]);
+$input = get_input(null, $definition);
+$fresh = $input->getOption(FRESH_CONSOLE_OPTION);
+$fresh_plugins = $input->getOption(FRESH_PLUGINS_CONSOLE_OPTION);
 
 // plugins
 if ($fresh_plugins && mysql_table_exists(DB_DATABASE, \Kanata\Models\Plugin::TABLE_NAME)) {

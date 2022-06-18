@@ -1,5 +1,6 @@
 <?php
 
+use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
@@ -12,10 +13,10 @@ if (! function_exists('get_output')) {
 }
 
 if (! function_exists('get_input')) {
-    function get_input(): InputInterface
+    function get_input(array $argv = null, InputDefinition $definition = null): InputInterface
     {
         if (!container()->has('input')) {
-            return new ArgvInput;
+            return new ArgvInput($argv, $definition);
         }
 
         return container()->input;

@@ -8,11 +8,9 @@ use Kanata\Models\Plugin;
 use Kanata\Models\Traits\Validation;
 use Kanata\Repositories\Interfaces\Repository;
 use Exception;
-use Lazer\Classes\LazerException;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Required;
 use Symfony\Component\Validator\Constraints\Type;
-use Lazer\Classes\Database as Lazer;
 use function Stringy\create as s;
 
 class PluginRepository implements Repository
@@ -141,9 +139,9 @@ class PluginRepository implements Repository
             return false;
         }
 
-        try {
-            $record = Plugin::find((int) $id);
-        } catch (LazerException $e) {
+        $record = Plugin::find((int) $id);
+
+        if (null === $record) {
             return false;
         }
 

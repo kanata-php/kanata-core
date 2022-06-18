@@ -23,12 +23,12 @@ use voku\helper\Hooks;
 
 class Bootstrap
 {
-    public static function startConsole(): void
+    public static function startConsole(array $args = []): void
     {
         $application = new Application();
 
         try {
-            self::processCore();
+            self::processCore($args);
         } catch (Exception $e) {
             echo PHP_EOL . $e->getMessage() . PHP_EOL . PHP_EOL;
             return;
@@ -88,7 +88,9 @@ class Bootstrap
         Dependencies::start();
         Config::start();
 
-        Autoloader::startPlugins();
+        if (!isset($args['skip_plugins'])) {
+            Autoloader::startPlugins();
+        }
         Autoloader::startPluginHelpers();
     }
 }
