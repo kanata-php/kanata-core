@@ -6,11 +6,19 @@ use Conveyor\SocketHandlers\Interfaces\SocketHandlerInterface;
 use Conveyor\SocketHandlers\SocketMessageRouter;
 use Error;
 use Exception;
+use Ilex\SwoolePsr7\SwooleResponseConverter;
+use Ilex\SwoolePsr7\SwooleServerRequestConverter;
+use Kanata\Commands\Traits\HttpRequest;
 use Kanata\Events\WsClose;
 use Kanata\Events\WsMessage;
 use Kanata\Events\WsOpen;
+use Kanata\Exceptions\UnauthorizedException;
+use Kanata\Http\Middlewares\CoreMiddleware;
+use Kanata\Services\Routes;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Container\ContainerInterface;
 use Swoole\Http\Request;
+use Swoole\Http\Response;
 use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server as WebSocketServer;
 use Symfony\Component\Console\Command\Command;
@@ -21,6 +29,8 @@ use voku\helper\Hooks;
 
 class StartWsServerCommand extends Command
 {
+    use HttpRequest;
+
     protected static $defaultName = 'ws';
 
     protected static $defaultDescription = 'Start WebSocket Server';
@@ -34,11 +44,19 @@ class StartWsServerCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        global $app;
+
         handle_existing_pid(WS_PID_FILE);
 
         container()->set('context', 'ws');
         container()->set('input', $input);
         container()->set('output', $output);
+
+        Routes::start();
+
+        $psr17Factory = new Psr17Factory();
+
+        $requestConverter = new SwooleServerRequestConverter($psr17Factory, $psr17Factory, $psr17Factory, $psr17Factory);
 
         $persistence = socket_persistence();
 
@@ -57,7 +75,10 @@ class StartWsServerCommand extends Command
             SWOOLE_BASE
         );
 
-        $server_settings = [];
+        $server_settings = [
+            'document_root' => public_path(),
+            'enable_static_handler' => true,
+        ];
 
         if (WS_SERVER_SSL === true) {
             $websocket = new WebSocketServer(WS_SERVER_HOST, $port, $server_mode, SWOOLE_SOCK_TCP | SWOOLE_SSL);
@@ -184,7 +205,6 @@ class StartWsServerCommand extends Command
             }
         });
 
-
         $websocket->on('Disconnect', function(WebSocketServer $server, int $fd) {
             echo 'Connection disconnected: ' . $fd . PHP_EOL;
         });
@@ -203,6 +223,23 @@ class StartWsServerCommand extends Command
             Hooks::getInstance()->do_action('ws_close', $fd);
         });
 
+        $websocket->on("request", new CoreMiddleware(function (
+            Request $swooleRequest, Response $swooleResponse
+        ) use ($app, $requestConverter, $websocket) {
+            $psr7Request = $requestConverter->createFromSwoole($swooleRequest);
+
+            try {
+                $psr7Request = $this->addMiddlewareHttpRequest($psr7Request);
+                $psr7Response = $app->handle($psr7Request);
+            } catch (UnauthorizedException $e) {
+                $swooleResponse->status(403, 'Unauthorized procedure!');
+                return $swooleResponse->end($this->getUnauthorizedView());
+            }
+
+            $converter = new SwooleResponseConverter($swooleResponse);
+            $converter->send($this->processResponse($psr7Request, $psr7Response));
+        }));
+
         /**
          * Action: websocket_server
          * Description: Important for WebSocket custom or overwritten callbacks.
@@ -213,6 +250,8 @@ class StartWsServerCommand extends Command
             'websocket_server',
             $websocket
         );
+
+        $app->getContainer()->set('server', $websocket);
 
         $websocket->start();
 

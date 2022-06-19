@@ -6,6 +6,7 @@ use Kanata\Exceptions\ErrorHandler;
 use Kanata\Http\Controllers\DocumentationController;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use RuntimeException;
 use Slim\Routing\RouteCollectorProxy;
 use voku\helper\Hooks;
 
@@ -30,11 +31,21 @@ class Routes
              */
             $group = Hooks::getInstance()->apply_filters('routes', $group);
 
-            $group->get('/', function (Request $request, Response $response) {
-                return view($response, 'core::home', []);
-            })->setName('home');
+            // This allows the home route to be overwritten - in case it is already
+            // registered, we avoid registering.
+            try {
+                $group->getRouteCollector()->getNamedRoute('home');
+            } catch (RuntimeException $e) {
+                $group->get('/', function (Request $request, Response $response) {
+                    return view($response, 'core::home', []);
+                })->setName('home');
+            }
 
-            $group->get('/docs', [DocumentationController::class, 'index'])->setName('docs');
+            try {
+                $group->getRouteCollector()->getNamedRoute('docs');
+            } catch (RuntimeException $e) {
+                $group->get('/docs', [DocumentationController::class, 'index'])->setName('docs');
+            }
         })->add($errorMiddleware);
     }
 }

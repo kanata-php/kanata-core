@@ -4,6 +4,7 @@ namespace Kanata\Exceptions;
 
 use Slim\Interfaces\ErrorRendererInterface;
 use Throwable;
+use voku\helper\Hooks;
 
 class ErrorHandler implements ErrorRendererInterface
 {
@@ -48,7 +49,18 @@ class ErrorHandler implements ErrorRendererInterface
 
         $output .= '</div>';
 
-        $html = container()->view->render('core::error', ['content' => $output]);
+        /**
+         * Action: error_template
+         * Description: Customize the error page template.
+         * Expected return: string
+         * @param string $errorTemplate
+         */
+        $errorTemplate = Hooks::getInstance()->apply_filters(
+            'error_template',
+            'core::error'
+        );
+
+        $html = container()->view->render($errorTemplate, ['content' => $output]);
 
         return $html;
     }
