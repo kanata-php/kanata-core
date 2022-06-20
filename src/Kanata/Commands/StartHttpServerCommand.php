@@ -16,6 +16,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use voku\helper\Hooks;
 
 class StartHttpServerCommand extends Command
@@ -36,6 +37,8 @@ class StartHttpServerCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         global $app;
+
+        $io = new SymfonyStyle($input, $output);
 
         container()->set('context', 'http');
         container()->set('input', $input);
@@ -96,8 +99,8 @@ class StartHttpServerCommand extends Command
 
         $server->set($server_settings);
 
-        $server->on("start", function (Server $server) {
-            echo 'Swoole Server is started at http://' . $server->host . ':' . $server->port . PHP_EOL;
+        $server->on("start", function (Server $server) use ($io) {
+            $io->info('Swoole Server is started at http://' . $server->host . ':' . $server->port);
         });
 
         $server->on("request", new CoreMiddleware(function (

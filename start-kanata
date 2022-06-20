@@ -27,17 +27,14 @@ if (!defined('PHPUNIT_COMPOSER_INSTALL')) {
 
 require PHPUNIT_COMPOSER_INSTALL;
 
-use Illuminate\Database\Schema\Blueprint;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputOption;
 use voku\helper\Hooks;
+use Kanata\Services\Bootstrap;
 
-\Kanata\Services\Bootstrap::processCore(['skip_plugins' => true]);
+Bootstrap::processCore(['skip_plugins' => true]);
 
-// -----------------------------------------------------
-// prepare json dbs
-// -----------------------------------------------------
-
+// prepare console inputs
 $definition = new InputDefinition([
     new InputOption(FRESH_CONSOLE_OPTION, null, InputOption::VALUE_NONE),
     new InputOption(FRESH_PLUGINS_CONSOLE_OPTION, null, InputOption::VALUE_NONE),
@@ -46,78 +43,11 @@ $input = get_input(null, $definition);
 $fresh = $input->getOption(FRESH_CONSOLE_OPTION);
 $fresh_plugins = $input->getOption(FRESH_PLUGINS_CONSOLE_OPTION);
 
-// plugins
-if ($fresh_plugins && mysql_table_exists(DB_DATABASE, \Kanata\Models\Plugin::TABLE_NAME)) {
-    container()->db->schema()->drop(\Kanata\Models\Plugin::TABLE_NAME);
-}
-if (!mysql_table_exists(DB_DATABASE, \Kanata\Models\Plugin::TABLE_NAME)) {
-    container()->db->schema()->create(\Kanata\Models\Plugin::TABLE_NAME, function (Blueprint $table) {
-        $table->increments('id');
-        $table->boolean('active');
-        $table->string('directory_name');
-        $table->string('path');
-        $table->string('name');
-        $table->string('author_name')->nullable();
-        $table->string('author_email')->nullable();
-        $table->string('description')->nullable();
-        $table->timestamps();
-    });
-}
+// migrate
+Bootstrap::migrateBase($fresh_plugins, $fresh);
 
-// ws channels
-if ($fresh && mysql_table_exists(DB_DATABASE, \Kanata\Models\WsChannel::TABLE_NAME)) {
-    container()->db->schema()->drop(\Kanata\Models\WsChannel::TABLE_NAME);
-}
-if (!mysql_table_exists(DB_DATABASE, \Kanata\Models\WsChannel::TABLE_NAME)) {
-    container()->db->schema()->create(\Kanata\Models\WsChannel::TABLE_NAME, function (Blueprint $table) {
-        $table->increments('id');
-        $table->integer('fd');
-        $table->string('channel');
-        $table->timestamps();
-    });
-}
-
-// ws listeners
-if ($fresh && mysql_table_exists(DB_DATABASE, \Kanata\Models\WsListener::TABLE_NAME)) {
-    container()->db->schema()->drop(\Kanata\Models\WsListener::TABLE_NAME);
-}
-if (!mysql_table_exists(DB_DATABASE, \Kanata\Models\WsListener::TABLE_NAME)) {
-    container()->db->schema()->create(\Kanata\Models\WsListener::TABLE_NAME, function (Blueprint $table) {
-        $table->increments('id');
-        $table->integer('fd');
-        $table->string('action');
-        $table->timestamps();
-    });
-}
-
-// ws communications
-if ($fresh && mysql_table_exists(DB_DATABASE, \Kanata\Models\WsCommunication::TABLE_NAME)) {
-    container()->db->schema()->drop(\Kanata\Models\WsCommunication::TABLE_NAME);
-}
-if (!mysql_table_exists(DB_DATABASE, \Kanata\Models\WsCommunication::TABLE_NAME)) {
-    container()->db->schema()->create(\Kanata\Models\WsCommunication::TABLE_NAME, function (Blueprint $table) {
-        $table->increments('id');
-        $table->string('action');
-        $table->longText('data');
-        $table->timestamps();
-    });
-}
-
-// ws associations
-if ($fresh && mysql_table_exists(DB_DATABASE, \Kanata\Models\WsAssociation::TABLE_NAME)) {
-    container()->db->schema()->drop(\Kanata\Models\WsAssociation::TABLE_NAME);
-}
-if (!mysql_table_exists(DB_DATABASE, \Kanata\Models\WsAssociation::TABLE_NAME)) {
-    container()->db->schema()->create(\Kanata\Models\WsAssociation::TABLE_NAME, function (Blueprint $table) {
-        $table->increments('id');
-        $table->integer('fd');
-        $table->integer('user_id');
-        $table->timestamps();
-    });
-}
-
-\Kanata\Services\Bootstrap::processCore(['only_plugins' => true]);
-
+// execute plugins migrations
+Bootstrap::startPlugins();
 if ($fresh) {
     Hooks::getInstance()->do_action('rollback_migrations');
 }

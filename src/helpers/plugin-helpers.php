@@ -24,6 +24,20 @@ if (! function_exists('get_active_plugins')) {
     }
 }
 
+if (! function_exists('is_plugin_active')) {
+    /**
+     * Verify if plugin is active by directory name.
+     *
+     * @return bool
+     */
+    function is_plugin_active(string $pluginDirectory): bool {
+        return count(PluginRepository::get([
+            'active' => true,
+            'directory_name' => $pluginDirectory,
+        ])) > 0;
+    }
+}
+
 if (! function_exists('get_deactivated_plugins')) {
     /**
      * Get list of deactivated plugins.

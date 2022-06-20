@@ -6,6 +6,7 @@ use Kanata\Commands\Traits\LogoTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class InfoCommand extends Command
 {
@@ -22,40 +23,44 @@ class InfoCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $io = new SymfonyStyle($input, $output);
+
         $this->writeLogo($output);
 
-        $this->printBasicInfo($output);
+        $this->printBasicInfo($io);
 
         return Command::SUCCESS;
     }
 
-    private function printBasicInfo(OutputInterface $output): void
+    private function printBasicInfo(SymfonyStyle $io): void
     {
-        $output->writeln('');
-        $output->writeln('<options=bold>###################################</>');
-        $output->writeln('<options=bold>How to:</>');
-        $output->writeln('<options=bold>###################################</>');
+        $io->writeln('<info>Documentation: https://kanata-php.github.io/kanata</info>');
 
-        $output->writeln('');
-        $output->writeln('<info>To start docker-compose environment, just run:</info> docker-compose up -d');
-        $output->writeln('');
+        $io->writeln('');
+        $io->writeln('<options=bold>###################################</>');
+        $io->writeln('<options=bold>How to:</>');
+        $io->writeln('<options=bold>###################################</>');
 
-        $output->writeln('<options=bold>--- Supervisor HTTP ---</>');
-        $output->writeln('<info>Supervisor Output is located at:</info> storage/logs/output.log');
-        $output->writeln('<info>Supervisor Errors are located at:</info> storage/logs/error.log');
+        $io->writeln('');
+        $io->writeln('<info>To start docker-compose environment, just run:</info> docker-compose up -d');
+        $io->writeln('');
 
-        $output->writeln('');
+        $io->writeln('<options=bold>--- Supervisor HTTP ---</>');
+        $io->writeln('<info>Supervisor Output is located at:</info> storage/logs/output.log');
+        $io->writeln('<info>Supervisor Errors are located at:</info> storage/logs/error.log');
 
-        $output->writeln('<options=bold>--- Supervisor WebSocket ---</>');
-        $output->writeln('<info>Supervisor Output is located at:</info> storage/logs/ws-output.log');
-        $output->writeln('<info>Supervisor Errors are located at:</info> storage/logs/ws-error.log');
+        $io->writeln('');
 
-        $output->writeln('');
+        $io->writeln('<options=bold>--- Supervisor WebSocket ---</>');
+        $io->writeln('<info>Supervisor Output is located at:</info> storage/logs/ws-output.log');
+        $io->writeln('<info>Supervisor Errors are located at:</info> storage/logs/ws-error.log');
 
-        $output->writeln('<options=bold>--- Inotify ---</>');
-        $output->writeln('<info>Inotify Output is located at:</info> storage/logs/inotify-output.log');
-        $output->writeln('<info>Inotify Errors are located at:</info> storage/logs/inotify-error.log');
+        $io->writeln('');
 
-        $output->writeln('');
+        $io->writeln('<options=bold>--- Inotify ---</>');
+        $io->writeln('<info>Inotify Output is located at:</info> storage/logs/inotify-output.log');
+        $io->writeln('<info>Inotify Errors are located at:</info> storage/logs/inotify-error.log');
+
+        $io->writeln('');
     }
 }

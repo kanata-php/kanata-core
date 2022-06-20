@@ -33,21 +33,25 @@ class PluginRepository implements Repository
         $searching = false;
 
         if (!empty($params)) {
-            $plugins = new Plugin;
+            $plugins = Plugin::query();
         }
 
-        if (isset($params['name'])) {
+        if (!empty($params)) {
             $searching = true;
-            $plugins = $plugins->where('name', '=', $params['name']);
         }
 
-        if (isset($params['active'])) {
-            $searching = true;
-            $plugins = $plugins->where('active', '=', true);
+        foreach ($params as $key => $param) {
+            $plugins->where($key, '=', $param);
         }
 
-        if ($searching && null !== $plugins->first()) {
-            return $plugins->first()->toArray();
+        if ($searching) {
+            $results = $plugins->get();
+
+            if ($results->count() === 1) {
+                return $results->first()->toArray();
+            } elseif ($results->count() > 0) {
+                return $results->toArray();
+            }
         }
 
         return [];
