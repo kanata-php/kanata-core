@@ -59,7 +59,7 @@ class SessionTable implements CacheInterface
      * @throws InvalidArgumentException
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function get($key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         if ($this->has($key)) {
             $value = self::$table->get($key);
@@ -84,7 +84,7 @@ class SessionTable implements CacheInterface
      * @throws InvalidArgumentException
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function set($key, $value, $ttl = null)
+    public function set(string $key, mixed $value, null|int|\DateInterval $ttl = null): bool
     {
         return self::$table->set($key, [
             'data' => json_encode($value),
@@ -102,7 +102,7 @@ class SessionTable implements CacheInterface
      * @throws InvalidArgumentException
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function delete($key)
+    public function delete(string $key): bool
     {
         return self::$table->del($key);
     }
@@ -112,7 +112,7 @@ class SessionTable implements CacheInterface
      *
      * @return bool True on success and false on failure.
      */
-    public function clear()
+    public function clear(): bool
     {
         $result = self::$table->destroy();
         $this->createTable();
@@ -131,7 +131,7 @@ class SessionTable implements CacheInterface
      *   MUST be thrown if $keys is neither an array nor a Traversable,
      *   or if any of the $keys are not a legal value.
      */
-    public function getMultiple($keys, $default = null)
+    public function getMultiple(iterable $keys, mixed $default = null): iterable
     {
         $data = [];
         foreach ($keys as $key) {
@@ -154,7 +154,7 @@ class SessionTable implements CacheInterface
      *   MUST be thrown if $values is neither an array nor a Traversable,
      *   or if any of the $values are not a legal value.
      */
-    public function setMultiple($values, $ttl = null)
+    public function setMultiple(iterable $values, null|int|\DateInterval $ttl = null): bool
     {
         $inserted = [];
         $data = [];
@@ -179,7 +179,7 @@ class SessionTable implements CacheInterface
      *   MUST be thrown if $keys is neither an array nor a Traversable,
      *   or if any of the $keys are not a legal value.
      */
-    public function deleteMultiple($keys)
+    public function deleteMultiple(iterable $keys): bool
     {
         foreach ($keys as $key) {
             if ($this->has($key)) {
@@ -205,7 +205,7 @@ class SessionTable implements CacheInterface
      * @throws InvalidArgumentException
      *   MUST be thrown if the $key string is not a legal value.
      */
-    public function has($key)
+    public function has(string $key): bool
     {
         return self::$table->exists($key);
     }
