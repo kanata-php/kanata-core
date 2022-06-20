@@ -3,6 +3,7 @@
 namespace Kanata\Services;
 
 use Kanata\Exceptions\ErrorHandler;
+use Kanata\Exceptions\ErrorRenderer;
 use Kanata\Http\Controllers\DocumentationController;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -18,9 +19,12 @@ class Routes
 
         // Error handling.
         $app->addRoutingMiddleware();
+        $kanataErrorHandler = new ErrorHandler($app->getCallableResolver(), $app->getResponseFactory());
         $errorMiddleware = $app->addErrorMiddleware(true, true, true);
+        $errorMiddleware->setDefaultErrorHandler($kanataErrorHandler);
+
         $errorHandler = $errorMiddleware->getDefaultErrorHandler();
-        $errorHandler->registerErrorRenderer('text/html', ErrorHandler::class);
+        $errorHandler->registerErrorRenderer('text/html', ErrorRenderer::class);
 
         $app->group('', function (RouteCollectorProxy $group) {
             /**
