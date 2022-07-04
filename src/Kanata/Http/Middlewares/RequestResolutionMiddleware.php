@@ -3,9 +3,7 @@
 namespace Kanata\Http\Middlewares;
 
 use Closure;
-use Http\Message\RequestFactory;
 use Kanata\Http\Middlewares\Interfaces\RouteMiddlewareInterface;
-use Kanata\Requests\DocsRequest;
 use League\Pipeline\PipelineBuilder;
 use League\Pipeline\StageInterface;
 use Psr\Http\Message\RequestInterface;
