@@ -5,6 +5,7 @@ namespace Kanata\Services;
 use Kanata\Exceptions\ErrorHandler;
 use Kanata\Exceptions\ErrorRenderer;
 use Kanata\Http\Controllers\DocumentationController;
+use Kanata\Http\Middlewares\RequestResolutionMiddleware;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use RuntimeException;
@@ -50,6 +51,8 @@ class Routes
             } catch (RuntimeException $e) {
                 $group->get('/docs', [DocumentationController::class, 'index'])->setName('docs');
             }
-        })->add($errorMiddleware);
+        })
+            ->add($errorMiddleware)
+            ->add(new RequestResolutionMiddleware);
     }
 }

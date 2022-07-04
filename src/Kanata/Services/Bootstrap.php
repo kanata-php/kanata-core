@@ -109,6 +109,13 @@ class Bootstrap
         Autoloader::startPlugins();
     }
 
+    /**
+     * Migration related functionalities.
+     *
+     * @param bool $fresh_plugins
+     * @param bool $fresh
+     * @return void
+     */
     public static function migrateBase(bool $fresh_plugins, bool $fresh): void
     {
         self::migratePlugins($fresh_plugins);

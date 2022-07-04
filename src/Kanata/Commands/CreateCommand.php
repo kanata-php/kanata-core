@@ -18,10 +18,12 @@ class CreateCommand extends Command
 
     protected static $defaultName = 'command:create';
 
+    protected static $defaultDescription = 'This command generate a new command skeleton for your Kanata Plugin';
+
     protected function configure(): void
     {
         $this
-            ->setHelp('This command generate a new command skeleton for your Kanata Plugin.')
+            ->setHelp(self::$defaultDescription)
             ->setDefinition(
                 new InputDefinition([
                     new InputArgument('name', InputArgument::REQUIRED, 'The command name.'),

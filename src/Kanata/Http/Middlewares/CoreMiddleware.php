@@ -11,6 +11,9 @@ use Swoole\Http\Request;
 use Swoole\Http\Response;
 use voku\helper\Hooks;
 
+/**
+ * Middleware for Swoole Request side.
+ */
 class CoreMiddleware
 {
     protected $callback;
