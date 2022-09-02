@@ -78,7 +78,6 @@ class Bootstrap
     public static function bootstrapPhpunit(): void
     {
         self::processCore();
-        Autoloader::startConstants();
         Autoloader::startHelpers();
     }
 
