@@ -1,8 +1,10 @@
-<phpunit bootstrap="src/bootstrap-phpunit.php">
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="src/bootstrap-phpunit.php"
+         colors="true"
+         printerClass="Codedungeon\PHPUnitPrettyResultPrinter\Printer">
   <testsuites>
-    <testsuite name="helpers">
-      <file>tests/HttpHelpersTest.php</file>
-      <file>tests/EventsTest.php</file>
+    <testsuite name="Unit">
+      <directory>tests/Unit</directory>
     </testsuite>
   </testsuites>
 </phpunit>

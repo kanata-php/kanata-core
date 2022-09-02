@@ -4,12 +4,10 @@ namespace Kanata\Commands;
 
 use Exception;
 use Kanata\Commands\Traits\LogoTrait;
-use Kanata\Repositories\PluginRepository;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -17,9 +15,15 @@ class PublishPluginCommand extends Command
 {
     use LogoTrait;
 
+    const CONFIG_DIR = 'config';
+    const VIEWS_DIR = 'views';
+
     protected static $defaultName = 'plugin:publish';
 
-    protected array $acceptedAssets = ['config'];
+    protected array $acceptedAssets = [
+        self::CONFIG_DIR,
+        self::VIEWS_DIR,
+    ];
 
     protected function configure(): void
     {
@@ -28,7 +32,7 @@ class PublishPluginCommand extends Command
             ->setDefinition(
                 new InputDefinition([
                     new InputArgument('plugin-name', InputArgument::REQUIRED, 'Which plugin to publish assets.'),
-                    new InputArgument('directory', InputArgument::REQUIRED, 'Directory from which assets will be published. Accepted values: config.'),
+                    new InputArgument('directory', InputArgument::REQUIRED, 'Directory from which assets will be published. Accepted values: ' . implode(', ', $this->acceptedAssets) . '.'),
                 ])
             );
     }
@@ -44,7 +48,10 @@ class PublishPluginCommand extends Command
 
         try {
             $this->validateDirectory($directory);
-            $this->publish($pluginName, $directory);
+            $this->publish(
+                pluginName: $pluginName,
+                directory: $directory,
+            );
         } catch (Exception $e) {
             $io->error($e->getMessage());
             return Command::FAILURE;
@@ -69,29 +76,63 @@ class PublishPluginCommand extends Command
      */
     public function publish(string $pluginName, string $directory): void
     {
-        $plugin = PluginRepository::get(['name' => $pluginName]);
+        $pluginRepo = container()->get('plugin-repository');
+        $plugin = $pluginRepo::get(['name' => $pluginName]);
 
         if (count($plugin) === 0) {
             throw new Exception('Plugin not found');
         }
 
         $relativePath = 'content/plugins/' . $plugin['directory_name'] . '/' . $directory;
-        $destiny = $directory . '/';
+        $destiny = $this->getDestinationDirectory(
+            pluginName: $pluginName,
+            directory: $directory,
+        );
 
         if (!container()->filesystem->has($relativePath)) {
             throw new Exception('"' . $directory . '" asset not available!');
         }
 
-        $contents = container()->filesystem->listContents($relativePath);
+        $iterator = container()->helpers->iterate_directory($relativePath);
+        foreach ($iterator as $item) {
+            $focus = $destiny . DIRECTORY_SEPARATOR . $iterator->getSubPathname();
 
-        foreach ($contents as $item) {
-            if (!container()->filesystem->has($destiny . $item['basename'])) {
-                container()->filesystem->copy($item['path'], $destiny . $item['basename']);
+            // create if not exists
+            $currentDestinationDirectory = pathinfo($focus, PATHINFO_DIRNAME);
+            $currentRelativeDestinationDirectory = make_path_relative_to_project(
+                $currentDestinationDirectory
+            );
+
+            if (!container()->filesystem
+                ->has($currentRelativeDestinationDirectory)) {
+                container()->filesystem->createDir($currentRelativeDestinationDirectory);
             }
 
-            if (!container()->filesystem->has($destiny . $item['basename'])) {
-                throw new Exception('There was an error while trying to publish ' . $pluginName . ' plugin\'s asset ' . $directory . '.');
+            $currentRelativeDestinationFile = $currentRelativeDestinationDirectory . DIRECTORY_SEPARATOR . $item->getFilename();
+
+            // conclude creation
+            $focusFileMimetype = container()->filesystem->getMimetype($item->getPathName());
+            if (
+                'directory' !== $focusFileMimetype
+                && !container()->filesystem->has($currentRelativeDestinationFile)
+            ) {
+                container()->filesystem->copy($item->getPathName(), $currentRelativeDestinationFile);
             }
+        }
+    }
+
+    private function getDestinationDirectory(string $pluginName, string $directory): string
+    {
+        switch ($directory) {
+            case self::VIEWS_DIR:
+                return resource_path() . self::VIEWS_DIR .
+                    DIRECTORY_SEPARATOR . 'vendors' .
+                    DIRECTORY_SEPARATOR . camelToSlug($pluginName) .
+                    DIRECTORY_SEPARATOR . $directory;
+
+            case self::CONFIG_DIR:
+            default:
+                return $directory;
         }
     }
 }

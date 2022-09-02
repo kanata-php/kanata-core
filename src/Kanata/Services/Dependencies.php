@@ -79,6 +79,14 @@ class Dependencies
             return $capsule;
         };
 
+        $container['plugin-repository'] = function () {
+            return new PluginRepository;
+        };
+
+        $container['helpers'] = function () {
+            return new Helpers;
+        };
+
         /**
          * -----------------------------------------------------------
          * Filesystem
@@ -144,7 +152,6 @@ class Dependencies
                 QUEUE_SERVER_PASSWORD
             );
         };
-
 
         /**
          * -----------------------------------------------------------

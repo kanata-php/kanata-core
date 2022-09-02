@@ -262,3 +262,19 @@ if (!function_exists('array_only')) {
         return $newArray;
     }
 }
+
+if (!function_exists('iterate_directory')) {
+    /**
+     * Iterate through directory recursively.
+     *
+     * @param string $path
+     * @return Iterator
+     */
+    function iterate_directory(string $path): Iterator
+    {
+        return new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::SELF_FIRST
+        );
+    }
+}
