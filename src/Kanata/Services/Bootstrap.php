@@ -4,6 +4,7 @@ namespace Kanata\Services;
 
 use Exception;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Schema\Builder;
 use Kanata\Commands\CreateCommand;
 use Kanata\Commands\ListPluginCommand;
 use Kanata\Commands\PublishPluginCommand;
@@ -126,15 +127,15 @@ class Bootstrap
 
     public static function migratePlugins(bool $freshPlugins): void
     {
-        if (
-            $freshPlugins
-            && mysql_table_exists(DB_DATABASE, Plugin::TABLE_NAME)
-        ) {
-            container()->db->schema()->drop(Plugin::TABLE_NAME);
+        /** @var Builder $schema */
+        $schema = container()->db->schema();
+
+        if ($freshPlugins && $schema->hasTable(Plugin::TABLE_NAME)) {
+            $schema->drop(Plugin::TABLE_NAME);
         }
 
-        if (!mysql_table_exists(DB_DATABASE, Plugin::TABLE_NAME)) {
-            container()->db->schema()->create(Plugin::TABLE_NAME, function (Blueprint $table) {
+        if (!$schema->hasTable(Plugin::TABLE_NAME)) {
+            $schema->create(Plugin::TABLE_NAME, function (Blueprint $table) {
                 $table->increments('id');
                 $table->boolean('active');
                 $table->string('directory_name');
@@ -150,11 +151,14 @@ class Bootstrap
 
     public static function migrateWsChannels(bool $fresh): void
     {
-        if ($fresh && mysql_table_exists(DB_DATABASE, WsChannel::TABLE_NAME)) {
-            container()->db->schema()->drop(WsChannel::TABLE_NAME);
+        /** @var Builder $schema */
+        $schema = container()->db->schema();
+
+        if ($fresh && $schema->hasTable(WsChannel::TABLE_NAME)) {
+            $schema->drop(WsChannel::TABLE_NAME);
         }
-        if (!mysql_table_exists(DB_DATABASE, WsChannel::TABLE_NAME)) {
-            container()->db->schema()->create(WsChannel::TABLE_NAME, function (Blueprint $table) {
+        if (!$schema->hasTable(WsChannel::TABLE_NAME)) {
+            $schema->create(WsChannel::TABLE_NAME, function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('fd');
                 $table->string('channel');
@@ -165,11 +169,14 @@ class Bootstrap
 
     public static function migrateWsListeners(bool $fresh): void
     {
-        if ($fresh && mysql_table_exists(DB_DATABASE, WsListener::TABLE_NAME)) {
-        container()->db->schema()->drop(WsListener::TABLE_NAME);
+        /** @var Builder $schema */
+        $schema = container()->db->schema();
+
+        if ($fresh && $schema->hasTable(WsListener::TABLE_NAME)) {
+            $schema->drop(WsListener::TABLE_NAME);
         }
-        if (!mysql_table_exists(DB_DATABASE, WsListener::TABLE_NAME)) {
-            container()->db->schema()->create(WsListener::TABLE_NAME, function (Blueprint $table) {
+        if (!$schema->hasTable(WsListener::TABLE_NAME)) {
+            $schema->create(WsListener::TABLE_NAME, function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('fd');
                 $table->string('action');
@@ -180,11 +187,14 @@ class Bootstrap
 
     public static function migrateWsCommunications(bool $fresh): void
     {
-        if ($fresh && mysql_table_exists(DB_DATABASE, WsCommunication::TABLE_NAME)) {
-            container()->db->schema()->drop(WsCommunication::TABLE_NAME);
+        /** @var Builder $schema */
+        $schema = container()->db->schema();
+
+        if ($fresh && $schema->hasTable(WsCommunication::TABLE_NAME)) {
+            $schema->drop(WsCommunication::TABLE_NAME);
         }
-        if (!mysql_table_exists(DB_DATABASE, WsCommunication::TABLE_NAME)) {
-            container()->db->schema()->create(WsCommunication::TABLE_NAME, function (Blueprint $table) {
+        if (!$schema->hasTable(WsCommunication::TABLE_NAME)) {
+            $schema->create(WsCommunication::TABLE_NAME, function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('action');
                 $table->longText('data');
@@ -195,11 +205,14 @@ class Bootstrap
 
     public static function migrateWsAssociations(bool $fresh): void
     {
-        if ($fresh && mysql_table_exists(DB_DATABASE, WsAssociation::TABLE_NAME)) {
-            container()->db->schema()->drop(WsAssociation::TABLE_NAME);
+        /** @var Builder $schema */
+        $schema = container()->db->schema();
+
+        if ($fresh && $schema->hasTable(WsAssociation::TABLE_NAME)) {
+            $schema->drop(WsAssociation::TABLE_NAME);
         }
-        if (!mysql_table_exists(DB_DATABASE, WsAssociation::TABLE_NAME)) {
-            container()->db->schema()->create(WsAssociation::TABLE_NAME, function (Blueprint $table) {
+        if (!$schema->hasTable(WsAssociation::TABLE_NAME)) {
+            $schema->create(WsAssociation::TABLE_NAME, function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('fd');
                 $table->integer('user_id');
