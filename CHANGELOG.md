@@ -1,6 +1,12 @@
 
 # Change Log
 
+## [0.7.11] - 2022-09-25
+
+### Fixed
+
+- The latest version of Socket Conveyor require socket persistence to never be within the same class (channel, listeners and associations). This affected the previous implementation of the WebSocket Command.
+
 ## [0.7.10] - 2022-09-25
 
 ### Added
