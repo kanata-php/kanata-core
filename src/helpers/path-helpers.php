@@ -96,6 +96,18 @@ if (! function_exists('plugin_path')) {
     }
 }
 
+if (! function_exists('content_path')) {
+    /**
+     * Retrieve content path of the project.
+     *
+     * @return string
+     */
+    function content_path(): string
+    {
+        return base_path() . 'content';
+    }
+}
+
 if (! function_exists('trailingslashit')) {
     /**
      * Add trailing slash.

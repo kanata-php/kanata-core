@@ -2,11 +2,12 @@
 
 namespace Kanata\Services\Traits;
 
+use Conveyor\SocketHandlers\Interfaces\ListenerPersistenceInterface;
 use Error;
 use Exception;
 use Kanata\Models\WsListener;
 
-trait ListenersPersistence
+class ListenersPersistence implements ListenerPersistenceInterface
 {
     public function listen(int $fd, string $action): void
     {

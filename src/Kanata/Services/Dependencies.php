@@ -2,9 +2,15 @@
 
 namespace Kanata\Services;
 
+use Conveyor\SocketHandlers\Interfaces\ChannelPersistenceInterface;
+use Conveyor\SocketHandlers\Interfaces\ListenerPersistenceInterface;
+use Conveyor\SocketHandlers\Interfaces\UserAssocPersistenceInterface;
 use Doctrine\Common\Cache\FilesystemCache;
 use Kanata\Drivers\DbCapsule;
 use Kanata\Repositories\PluginRepository;
+use Kanata\Services\Traits\AssociationsPersistence;
+use Kanata\Services\Traits\ChannelsPersistence;
+use Kanata\Services\Traits\ListenersPersistence;
 use League\Flysystem\Adapter\Local;
 use League\Plates\Engine;
 use Monolog\Formatter\LogstashFormatter;
@@ -104,15 +110,39 @@ class Dependencies
          * -----------------------------------------------------------
          */
 
-        $container['socket_persistence'] = function ($c) {
+        $container['ws_channel_persistence'] = function ($c) {
             /**
-             * Action: socket_persistence
-             * Description: Here you can choose a different websocket persistence implementation.
-             * Expected return: \Conveyor\SocketHandlers\Interfaces\PersistenceInterface
+             * Action: ws_channel_persistence
+             * Description: Here you can choose a different websocket channel persistence implementation.
+             * Expected return: \Conveyor\SocketHandlers\Interfaces\ChannelPersistenceInterface
              */
             return Hooks::getInstance()->apply_filters(
-                'socket_persistence',
-                new WebSocketPersistence
+                'ws_channel_persistence',
+                new ChannelsPersistence
+            );
+        };
+
+        $container['ws_assoc_persistence'] = function ($c) {
+            /**
+             * Action: ws_assoc_persistence
+             * Description: Here you can choose a different websocket user association persistence implementation.
+             * Expected return: \Conveyor\SocketHandlers\Interfaces\UserAssocPersistenceInterface
+             */
+            return Hooks::getInstance()->apply_filters(
+                'ws_assoc_persistence',
+                new AssociationsPersistence
+            );
+        };
+
+        $container['ws_listener_persistence'] = function ($c) {
+            /**
+             * Action: ws_listener_persistence
+             * Description: Here you can choose a different websocket listener persistence implementation.
+             * Expected return: \Conveyor\SocketHandlers\Interfaces\ListenerPersistenceInterface
+             */
+            return Hooks::getInstance()->apply_filters(
+                'ws_listener_persistence',
+                new ListenersPersistence
             );
         };
 

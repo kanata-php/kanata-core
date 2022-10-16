@@ -2,11 +2,12 @@
 
 namespace Kanata\Services\Traits;
 
+use Conveyor\SocketHandlers\Interfaces\UserAssocPersistenceInterface;
 use Error;
 use Exception;
 use Kanata\Models\WsAssociation;
 
-trait AssociationsPersistence
+class AssociationsPersistence implements UserAssocPersistenceInterface
 {
     /**
      * Associate a user id to a fd.

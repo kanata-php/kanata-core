@@ -2,11 +2,12 @@
 
 namespace Kanata\Services\Traits;
 
+use Conveyor\SocketHandlers\Interfaces\ChannelPersistenceInterface;
 use Error;
 use Exception;
 use Kanata\Models\WsChannel;
 
-trait ChannelsPersistence
+class ChannelsPersistence implements ChannelPersistenceInterface
 {
     public function connect(int $fd, string $channel): void
     {
