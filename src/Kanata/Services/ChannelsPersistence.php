@@ -1,6 +1,6 @@
 <?php
 
-namespace Kanata\Services\Traits;
+namespace Kanata\Services;
 
 use Conveyor\SocketHandlers\Interfaces\ChannelPersistenceInterface;
 use Error;
