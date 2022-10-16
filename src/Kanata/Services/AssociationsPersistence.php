@@ -47,10 +47,10 @@ class AssociationsPersistence implements UserAssocPersistenceInterface
     /**
      * Get user-id for a fd.
      *
-     * @param int $fd
+     * @param ?int $fd
      * @return int
      */
-    public function getAssoc(int $fd): int
+    public function getAssoc(int $fd): ?int
     {
         return WsAssociation::where('fd', '=', $fd)->get()->first()?->user_id;
     }
