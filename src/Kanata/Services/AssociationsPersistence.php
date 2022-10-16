@@ -38,7 +38,7 @@ class AssociationsPersistence implements UserAssocPersistenceInterface
     public function disassoc(int $userId): void
     {
         try {
-            WsAssociation::where('user_id', '=', $userId)->delete();
+            WsAssociation::where('user_id', '=', $userId)?->delete();
         } catch (Exception|Error $e) {
             // --
         }
@@ -52,7 +52,7 @@ class AssociationsPersistence implements UserAssocPersistenceInterface
      */
     public function getAssoc(int $fd): int
     {
-        return WsAssociation::where('fd', '=', $fd)->first()->user_id;
+        return WsAssociation::where('fd', '=', $fd)->get()->first()?->user_id;
     }
 
     /**

@@ -25,7 +25,7 @@ class ChannelsPersistence implements ChannelPersistenceInterface
     public function disconnect(int $fd): void
     {
         try {
-            WsChannel::where('fd', '=', $fd)->first()->delete();
+            WsChannel::where('fd', '=', $fd)->first()?->delete();
         } catch (Exception|Error $e) {
             // --
         }

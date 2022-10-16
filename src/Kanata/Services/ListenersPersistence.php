@@ -23,7 +23,7 @@ class ListenersPersistence implements ListenerPersistenceInterface
 
     public function getListener(int $fd): array
     {
-        return WsListener::where('fd', '=', $fd)->first()->toArray();
+        return WsListener::where('fd', '=', $fd)->first()?->toArray();
     }
 
     /**
@@ -61,7 +61,7 @@ class ListenersPersistence implements ListenerPersistenceInterface
             return WsListener::where('fd', '=', $fd)
                 ->where('action', '=', $action)
                 ->first()
-                ->delete();
+                ?->delete();
         } catch (Exception|Error $e) {
             // --
         }
@@ -74,7 +74,7 @@ class ListenersPersistence implements ListenerPersistenceInterface
         try {
             return WsListener::where('fd', '=', $fd)
                 ->first()
-                ->delete();
+                ?->delete();
         } catch (Exception|Error $e) {
             // --
         }
