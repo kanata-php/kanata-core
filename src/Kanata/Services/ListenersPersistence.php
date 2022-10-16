@@ -21,9 +21,9 @@ class ListenersPersistence implements ListenerPersistenceInterface
         }
     }
 
-    public function getListener(int $fd): array
+    public function getListener(int $fd): ?array
     {
-        return WsListener::where('fd', '=', $fd)->first()?->toArray() ?? [];
+        return WsListener::where('fd', '=', $fd)->first()?->toArray();
     }
 
     /**
