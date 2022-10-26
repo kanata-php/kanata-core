@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Handlers\ErrorHandler as SlimErrorHandler;
 use Throwable;
+use voku\helper\Hooks;
 
 class ErrorHandler extends SlimErrorHandler
 {

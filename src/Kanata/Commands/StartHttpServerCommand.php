@@ -2,6 +2,7 @@
 
 namespace Kanata\Commands;
 
+use Exception;
 use Ilex\SwoolePsr7\SwooleResponseConverter;
 use Ilex\SwoolePsr7\SwooleServerRequestConverter;
 use Kanata\Commands\Traits\HttpRequest;
@@ -9,6 +10,7 @@ use Kanata\Exceptions\UnauthorizedException;
 use Kanata\Http\Middlewares\CoreMiddleware;
 use Kanata\Services\Routes;
 use Nyholm\Psr7\Factory\Psr17Factory;
+use Slim\Exception\HttpNotFoundException;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 use Swoole\Http\Server;
@@ -63,8 +65,19 @@ class StartHttpServerCommand extends Command
             SWOOLE_PROCESS
         );
 
+        /**
+         * Action: http_document_root
+         * Description: Set the server's document root.
+         * Expected return: string
+         * @param string $http_document_root
+         */
+        $http_document_root = Hooks::getInstance()->apply_filters(
+            'http_document_root',
+            public_path()
+        );
+
         $server_settings = [
-            'document_root' => public_path(),
+            'document_root' => $http_document_root,
             'enable_static_handler' => true,
         ];
 

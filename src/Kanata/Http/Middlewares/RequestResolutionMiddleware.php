@@ -53,7 +53,7 @@ class RequestResolutionMiddleware implements RouteMiddlewareInterface
         }
 
         $parameters = current(array_filter($reflection->getParameters(), function ($item) {
-            $type = $item->getType()->getName();
+            $type = $item->getType()?->getName();
             if (class_exists($type)) {
                 $class = new ReflectionClass($type);
                 return null !== array_get($class->getInterfaces(), RequestInterface::class);
