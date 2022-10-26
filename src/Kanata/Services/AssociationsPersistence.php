@@ -1,12 +1,13 @@
 <?php
 
-namespace Kanata\Services\Traits;
+namespace Kanata\Services;
 
+use Conveyor\SocketHandlers\Interfaces\UserAssocPersistenceInterface;
 use Error;
 use Exception;
 use Kanata\Models\WsAssociation;
 
-trait AssociationsPersistence
+class AssociationsPersistence implements UserAssocPersistenceInterface
 {
     /**
      * Associate a user id to a fd.
@@ -37,7 +38,7 @@ trait AssociationsPersistence
     public function disassoc(int $userId): void
     {
         try {
-            WsAssociation::where('user_id', '=', $userId)->delete();
+            WsAssociation::where('user_id', '=', $userId)?->delete();
         } catch (Exception|Error $e) {
             // --
         }
@@ -46,12 +47,12 @@ trait AssociationsPersistence
     /**
      * Get user-id for a fd.
      *
-     * @param int $fd
+     * @param ?int $fd
      * @return int
      */
-    public function getAssoc(int $fd): int
+    public function getAssoc(int $fd): ?int
     {
-        return WsAssociation::where('fd', '=', $fd)->first()->user_id;
+        return WsAssociation::where('fd', '=', $fd)->get()->first()?->user_id;
     }
 
     /**

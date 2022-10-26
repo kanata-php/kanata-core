@@ -1,12 +1,13 @@
 <?php
 
-namespace Kanata\Services\Traits;
+namespace Kanata\Services;
 
+use Conveyor\SocketHandlers\Interfaces\ListenerPersistenceInterface;
 use Error;
 use Exception;
 use Kanata\Models\WsListener;
 
-trait ListenersPersistence
+class ListenersPersistence implements ListenerPersistenceInterface
 {
     public function listen(int $fd, string $action): void
     {
@@ -20,9 +21,9 @@ trait ListenersPersistence
         }
     }
 
-    public function getListener(int $fd): array
+    public function getListener(int $fd): ?array
     {
-        return WsListener::where('fd', '=', $fd)->first()->toArray();
+        return WsListener::where('fd', '=', $fd)->first()?->toArray();
     }
 
     /**
@@ -60,7 +61,7 @@ trait ListenersPersistence
             return WsListener::where('fd', '=', $fd)
                 ->where('action', '=', $action)
                 ->first()
-                ->delete();
+                ?->delete();
         } catch (Exception|Error $e) {
             // --
         }
@@ -73,7 +74,7 @@ trait ListenersPersistence
         try {
             return WsListener::where('fd', '=', $fd)
                 ->first()
-                ->delete();
+                ?->delete();
         } catch (Exception|Error $e) {
             // --
         }

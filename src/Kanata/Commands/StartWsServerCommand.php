@@ -58,7 +58,10 @@ class StartWsServerCommand extends Command
 
         $requestConverter = new SwooleServerRequestConverter($psr17Factory, $psr17Factory, $psr17Factory, $psr17Factory);
 
-        $persistence = socket_persistence();
+        $channelPersistence = ws_channel_persistence();
+        $userAssocPersistence = ws_assoc_persistence();
+        $listenerPersistence = ws_listener_persistence();
+        $persistence = [$channelPersistence, $userAssocPersistence, $listenerPersistence];
 
         $communications = socket_communication();
 
@@ -103,7 +106,7 @@ class StartWsServerCommand extends Command
 
         $websocket->set($server_settings);
 
-        $websocket->on("start", function (WebSocketServer $server) use ($port, $communications, $persistence) {
+        $websocket->on("start", function (WebSocketServer $server) use ($port, $communications, $channelPersistence) {
             file_put_contents(WS_PID_FILE, $server->master_pid);
 
             echo 'Swoole Server is started at ws://' . $server->host . ':' . $port;
@@ -112,7 +115,7 @@ class StartWsServerCommand extends Command
                 return;
             }
 
-            $server->tick((int) WS_TICK_INTERVAL, function () use ($server, $communications, $persistence) {
+            $server->tick((int) WS_TICK_INTERVAL, function () use ($server, $communications, $channelPersistence) {
                 $dataList = $communications->get(WS_MESSAGE_ACTION);
                 if (empty($dataList)) {
                     return;
@@ -124,7 +127,7 @@ class StartWsServerCommand extends Command
                     $content = json_decode($data['data'], true);
                     if (isset($content['channel'])) {
                         $connections = [];
-                        foreach ($persistence->getAllConnections() as $key => $item) {
+                        foreach ($channelPersistence->getAllConnections() as $key => $item) {
                             if ($item !== $content['channel']) {
                                 continue;
                             }
@@ -156,7 +159,7 @@ class StartWsServerCommand extends Command
 
                     foreach ($connections as $fd) {
                         if (!$server->push($fd, json_encode($data))) {
-                            $persistence->disconnect($fd);
+                            $channelPersistence->disconnect($fd);
                         }
                     }
                 }

@@ -1,12 +1,13 @@
 <?php
 
-namespace Kanata\Services\Traits;
+namespace Kanata\Services;
 
+use Conveyor\SocketHandlers\Interfaces\ChannelPersistenceInterface;
 use Error;
 use Exception;
 use Kanata\Models\WsChannel;
 
-trait ChannelsPersistence
+class ChannelsPersistence implements ChannelPersistenceInterface
 {
     public function connect(int $fd, string $channel): void
     {
@@ -24,7 +25,7 @@ trait ChannelsPersistence
     public function disconnect(int $fd): void
     {
         try {
-            WsChannel::where('fd', '=', $fd)->first()->delete();
+            WsChannel::where('fd', '=', $fd)->first()?->delete();
         } catch (Exception|Error $e) {
             // --
         }
