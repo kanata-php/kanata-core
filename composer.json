@@ -45,7 +45,8 @@
         "lotharthesavior/chocookies": "^0.0",
         "firebase/php-jwt": "^6.1",
         "symfony/cache": "^6.1",
-        "lotharthesavior/branch": "^1.0"
+        "lotharthesavior/branch": "^1.0",
+        "kanata-php/kanata-plugin-sdk": "^0"
     },
     "bin": [
         "start-kanata"
