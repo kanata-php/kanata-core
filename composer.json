@@ -15,14 +15,13 @@
         "slim/slim": "4.*",
         "monolog/monolog": "^1.17",
         "league/flysystem": "^1.0",
-        "guzzlehttp/guzzle": "^7.4",
+        "guzzlehttp/guzzle": "^7.5",
         "symfony/validator": "^6.0",
         "league/pipeline": "^1.0",
         "kanata-php/socket-conveyor": "^1.1",
         "voku/php-hooks": "^0.2",
         "dflydev/fig-cookies": "^3.0",
         "doctrine/annotations": "^1.13",
-        "doctrine/cache": "^1.10",
         "ray/aop": "^2.10",
         "psr/cache": "^2",
         "illuminate/database": "^9",
@@ -44,7 +43,9 @@
         "psy/psysh": "@stable",
         "danielstjules/stringy": "^3.1",
         "lotharthesavior/chocookies": "^0.0",
-        "firebase/php-jwt": "^6.1"
+        "firebase/php-jwt": "^6.1",
+        "symfony/cache": "^6.1",
+        "lotharthesavior/branch": "^1.0"
     },
     "bin": [
         "start-kanata"

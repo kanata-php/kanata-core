@@ -2,21 +2,18 @@
 
 namespace Kanata\Services;
 
-use Conveyor\SocketHandlers\Interfaces\ChannelPersistenceInterface;
-use Conveyor\SocketHandlers\Interfaces\ListenerPersistenceInterface;
-use Conveyor\SocketHandlers\Interfaces\UserAssocPersistenceInterface;
-use Doctrine\Common\Cache\FilesystemCache;
+use GuzzleHttp\Client;
 use Kanata\Drivers\DbCapsule;
 use Kanata\Repositories\PluginRepository;
+use KanataPlugin\KanataPlugin;
 use League\Flysystem\Adapter\Local;
 use League\Plates\Engine;
-use Monolog\Formatter\LogstashFormatter;
 use Monolog\Handler\StreamHandler;
-use Monolog\Handler\SyslogUdpHandler;
 use Monolog\Logger;
 use League\Flysystem\Filesystem as Flysystem;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use voku\helper\Hooks;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 class Dependencies
 {
@@ -60,8 +57,11 @@ class Dependencies
         };
 
         $container['cache'] = function ($c) {
-            $cache = new FilesystemCache(storage_path() . 'cache/');
-            return $cache;
+            return new FilesystemAdapter(
+                namespace: config('app.cache-namespace'),
+                defaultLifetime: config('app.cache-ttl'),
+                directory: public_path(config('app.cache-directory')),
+            );
         };
 
         $container['db'] = function () {
@@ -88,6 +88,10 @@ class Dependencies
 
         $container['helpers'] = function () {
             return new Helpers;
+        };
+
+        $container['http'] = function () {
+            return new Client();
         };
 
         /**
@@ -188,6 +192,21 @@ class Dependencies
 
         $container['proxy'] = function ($c) {
             return  new Proxy();
+        };
+
+        /**
+         * -----------------------------------------------------------
+         * Kanata
+         * -----------------------------------------------------------
+         */
+
+        $container['plugins-api'] = function ($c) {
+            return  new KanataPlugin(
+                token: '',
+                options: [
+                    'api-url' => 'https://plugins.kanataphp.com',
+                ],
+            );
         };
     }
 }

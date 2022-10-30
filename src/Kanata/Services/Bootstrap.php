@@ -6,8 +6,10 @@ use Exception;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\Builder;
 use Kanata\Commands\CreateCommand;
+use Kanata\Commands\InstallPluginCommand;
 use Kanata\Commands\ListPluginCommand;
 use Kanata\Commands\PublishPluginCommand;
+use Kanata\Commands\SearchPluginCommand;
 use Kanata\Commands\ShellCommand;
 use Kanata\Commands\StartHttpServerCommand;
 use Kanata\Commands\StartMessageServiceCommand;
@@ -43,18 +45,25 @@ class Bootstrap
             return;
         }
 
-        $application->add(new InfoCommand);
+        // server commands
         $application->add(new StartHttpServerCommand);
         $application->add(new StartWsServerCommand);
         $application->add(new StartMessageServiceCommand);
+
+        // utility commands
+        $application->add(new InfoCommand);
         $application->add(new DebuggerCommand);
+        $application->add(new ShellCommand);
+        $application->add(new CreateCommand);
+
+        // plugin commands
         $application->add(new ListPluginCommand);
         $application->add(new CreatePluginCommand);
         $application->add(new ActivatePluginCommand);
         $application->add(new DeactivatePluginCommand);
-        $application->add(new ShellCommand);
         $application->add(new PublishPluginCommand);
-        $application->add(new CreateCommand);
+        $application->add(new SearchPluginCommand);
+        $application->add(new InstallPluginCommand);
 
         /**
          * Action: commands

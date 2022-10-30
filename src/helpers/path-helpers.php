@@ -24,11 +24,12 @@ if (! function_exists('storage_path')) {
     /**
      * Retrieve storage path of the project.
      *
+     * @param string $asset
      * @return string
      */
-    function storage_path(): string
+    function storage_path(string $asset = ''): string
     {
-        return base_path() . 'storage/';
+        return base_path() . 'storage' . DIRECTORY_SEPARATOR . $asset;
     }
 }
 
@@ -41,7 +42,7 @@ if (! function_exists('public_path')) {
      */
     function public_path(string $asset = ''): string
     {
-        return base_path() . 'public/' . $asset;
+        return base_path() . 'public' . DIRECTORY_SEPARATOR . $asset;
     }
 }
 
@@ -49,11 +50,12 @@ if (! function_exists('resource_path')) {
     /**
      * Retrieve resources path of the project.
      *
+     * @param string $asset
      * @return string
      */
-    function resource_path(): string
+    function resource_path(string $asset = ''): string
     {
-        return base_path() . 'resources/';
+        return base_path() . 'resources' . DIRECTORY_SEPARATOR . $asset;
     }
 }
 
@@ -65,7 +67,7 @@ if (! function_exists('template_path')) {
      */
     function template_path(): string
     {
-        return base_path() . 'resources/views';
+        return base_path() . 'resources' . DIRECTORY_SEPARATOR . 'views';
     }
 }
 
