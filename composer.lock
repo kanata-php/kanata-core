@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3af6c64148466494a69cbdc5d47a94c3",
+    "content-hash": "84f6f39ee55ed76af09b309351ce830f",
     "packages": [
         {
             "name": "aura/autoload",
@@ -1881,24 +1881,24 @@
         },
         {
             "name": "lotharthesavior/branch",
-            "version": "1.0.1",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lotharthesavior/branch.git",
-                "reference": "ddd7da37943b5c03084fab56b78672c61b6e8956"
+                "reference": "bc5e19684a54ce58ec98a8cd9e31c59b106982db"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lotharthesavior/branch/zipball/ddd7da37943b5c03084fab56b78672c61b6e8956",
-                "reference": "ddd7da37943b5c03084fab56b78672c61b6e8956",
+                "url": "https://api.github.com/repos/lotharthesavior/branch/zipball/bc5e19684a54ce58ec98a8cd9e31c59b106982db",
+                "reference": "bc5e19684a54ce58ec98a8cd9e31c59b106982db",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.1"
+                "php": "^8.1"
             },
             "require-dev": {
                 "mockery/mockery": "^1.2",
-                "phpunit/phpunit": "~8.4.0"
+                "phpunit/phpunit": "^9.5"
             },
             "type": "library",
             "autoload": {
@@ -1925,9 +1925,10 @@
                 "php-git"
             ],
             "support": {
-                "source": "https://github.com/lotharthesavior/branch/tree/master"
+                "issues": "https://github.com/lotharthesavior/branch/issues",
+                "source": "https://github.com/lotharthesavior/branch/tree/2.0.0"
             },
-            "time": "2020-05-18T02:36:13+00:00"
+            "time": "2022-10-31T03:54:17+00:00"
         },
         {
             "name": "lotharthesavior/chocookies",

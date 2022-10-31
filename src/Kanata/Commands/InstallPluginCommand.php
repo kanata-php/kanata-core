@@ -2,6 +2,8 @@
 
 namespace Kanata\Commands;
 
+use Git\Console;
+use Git\GitRepo;
 use Kanata\Commands\Traits\LogoTrait;
 use KanataPlugin\KanataPlugin;
 use Symfony\Component\Console\Command\Command;
@@ -37,12 +39,9 @@ class InstallPluginCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $io->info('Still work in progress...');
-        return Command::SUCCESS;
-
         $plugin = $input->getArgument('plugin');
 
-        $io->title('Plugins Install');
+        $io->title('Plugins Install: ' . $plugin);
 
         $io->info('Requesting plugins info...');
         $pluginData = $this->getPluginsData($plugin);
@@ -52,9 +51,15 @@ class InstallPluginCommand extends Command
             return Command::FAILURE;
         }
 
-        $this->installPlugin(array_merge($pluginData, ['slug' => $plugin]));
+        $path = untrailingslashit(plugin_path($plugin));
 
-        return Command::SUCCESS;
+        if ($this->installPlugin($pluginData, $path)) {
+            $io->info('Plugin installed successfully! (' . $path . ')');
+            return Command::SUCCESS;
+        }
+
+        $io->info('Failed to install plugin! (' . $plugin . ')');
+        return Command::FAILURE;
     }
 
     private function getPluginsData(string $plugin): ?array {
@@ -67,8 +72,10 @@ class InstallPluginCommand extends Command
         return $pluginsApi->getPlugins($args)->data;
     }
 
-    private function installPlugin(array $pluginData)
+    private function installPlugin(array $pluginData, string $path)
     {
-
+        $gitRepo = new GitRepo( new Console, '', true, true );
+        $gitRepo->clone( $pluginData['repo'], $path );
+        return file_exists($path);
     }
 }
