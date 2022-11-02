@@ -67,7 +67,9 @@ class PluginLoader
                 $plugin = $this->pluginRepository->registerIfNotRegistered($pluginPath);
             }
 
-            $this->loadPlugin($plugin);
+            if (!$this->loadPlugin($plugin)) {
+                continue;
+            }
             $pluginsFound[] = $plugin?->id;
         }
 
@@ -85,11 +87,15 @@ class PluginLoader
         });
     }
 
-    public function loadPlugin(Plugin $plugin)
+    public function loadPlugin(Plugin $plugin): bool
     {
         $this->loadPluginClass($plugin);
 
         $className = $this->pluginRepository->getClassName($plugin);
+        if (!class_exists($className)) {
+            return false;
+        }
+
         $reflectionClass = new ReflectionClass($className);
         $this->loadPluginAnnotations($plugin, $reflectionClass);
 
@@ -98,6 +104,8 @@ class PluginLoader
             $instance = $reflectionClass->newInstanceArgs([container()]);
             $instance->start();
         }
+
+        return true;
     }
 
     private function loadPluginClass(Plugin $plugin): void
