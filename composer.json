@@ -27,7 +27,6 @@
         "illuminate/database": "^9",
         "vlucas/phpdotenv": "^5.3",
         "ramsey/uuid": "^4.1",
-        "phpseclib/phpseclib": "~3.0",
         "nesbot/carbon": "^2.48",
         "wikimedia/composer-merge-plugin": "^2.0",
         "league/plates": "^3.4",
