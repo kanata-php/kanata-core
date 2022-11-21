@@ -1,6 +1,16 @@
 
 # Change Log
 
+## [0.8.2] - 2022-11-20
+
+### Added
+
+- Added commands around plugins functionalities / management.
+
+### Fixed
+
+- Fixed plugin related commands.
+
 ## [0.7.11] - 2022-09-25
 
 ### Fixed
