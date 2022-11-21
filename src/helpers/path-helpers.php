@@ -104,9 +104,9 @@ if (! function_exists('content_path')) {
      *
      * @return string
      */
-    function content_path(): string
+    function content_path(string $asset = ''): string
     {
-        return base_path() . 'content';
+        return base_path() . 'content' . DIRECTORY_SEPARATOR . $asset;
     }
 }
 

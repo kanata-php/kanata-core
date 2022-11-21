@@ -3,6 +3,7 @@
 namespace Kanata\Commands;
 
 use Kanata\Commands\Traits\LogoTrait;
+use Kanata\Services\Helpers;
 use Mustache_Engine;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -30,6 +31,11 @@ class CreatePluginCommand extends Command
         $output->writeln('');
         $output->writeln('Kanata - Creating a Plugin');
         $output->writeln('');
+
+        if (!Helpers::hasPluginsDbConnection()) {
+            $io->error('You must start Kanata first by running vendor/bin/start-kanata');
+            return Command::FAILURE;
+        }
 
         $pluginClassName = $input->getArgument('name');
 

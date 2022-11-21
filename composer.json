@@ -46,7 +46,8 @@
         "firebase/php-jwt": "^6.1",
         "symfony/cache": "^6.1",
         "lotharthesavior/branch": "^2.0",
-        "kanata-php/kanata-plugin-sdk": "^0"
+        "kanata-php/kanata-plugin-sdk": "^0",
+        "kanata-php/mustachio": "^0.0.2"
     },
     "bin": [
         "start-kanata"

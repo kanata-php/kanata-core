@@ -43,6 +43,16 @@ class CreateCommand extends Command
         $commandName = $input->getArgument('name');
         $pluginClassName = $input->getOption('plugin');
 
+        if (null === $commandName) {
+            $io->error('Missing command name argument!');
+            return Command::FAILURE;
+        }
+
+        if (null === $pluginClassName) {
+            $io->error('Missing plugin name option!');
+            return Command::FAILURE;
+        }
+
         $slug = camelToSlug($pluginClassName);
         $pluginPath = make_path_relative_to_project(trailingslashit(plugin_path()) . $slug);
         $commandsPath = trailingslashit($pluginPath) . 'src/Commands';

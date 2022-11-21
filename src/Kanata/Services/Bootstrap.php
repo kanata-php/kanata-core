@@ -10,6 +10,7 @@ use Kanata\Commands\InstallPluginCommand;
 use Kanata\Commands\ListPluginCommand;
 use Kanata\Commands\PublishPluginCommand;
 use Kanata\Commands\SearchPluginCommand;
+use Kanata\Commands\SetUpDbCommand;
 use Kanata\Commands\ShellCommand;
 use Kanata\Commands\StartHttpServerCommand;
 use Kanata\Commands\StartMessageServiceCommand;
@@ -55,6 +56,7 @@ class Bootstrap
         $application->add(new DebuggerCommand);
         $application->add(new ShellCommand);
         $application->add(new CreateCommand);
+        $application->add(new SetUpDbCommand);
 
         // plugin commands
         $application->add(new ListPluginCommand);
@@ -106,6 +108,11 @@ class Bootstrap
 
         Dependencies::start();
         Config::start();
+
+        // here we avoid loading plugins without proper db connection
+        if (!Helpers::hasPluginsDbConnection()) {
+            return;
+        }
 
         if (!isset($args['skip_plugins'])) {
             self::startPlugins();

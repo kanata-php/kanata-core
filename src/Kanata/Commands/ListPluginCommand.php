@@ -3,6 +3,7 @@
 namespace Kanata\Commands;
 
 use Kanata\Commands\Traits\LogoTrait;
+use Kanata\Services\Helpers;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -24,6 +25,11 @@ class ListPluginCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         $this->writeLogo($output);
+
+        if (!Helpers::hasPluginsDbConnection()) {
+            $io->error('You must start Kanata first by running vendor/bin/start-kanata');
+            return Command::FAILURE;
+        }
 
         $plugins = array_map(function ($plugin) use ($io) {
             $plugin = array_only($plugin, ['name', 'active', 'directory_name']);

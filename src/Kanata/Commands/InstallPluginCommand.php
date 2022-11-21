@@ -5,6 +5,7 @@ namespace Kanata\Commands;
 use Git\Console;
 use Git\GitRepo;
 use Kanata\Commands\Traits\LogoTrait;
+use Kanata\Services\Helpers;
 use KanataPlugin\KanataPlugin;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -40,6 +41,11 @@ class InstallPluginCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         $plugin = $input->getArgument('plugin');
+
+        if (!Helpers::hasPluginsDbConnection()) {
+            $io->error('You must start Kanata first by running vendor/bin/start-kanata');
+            return Command::FAILURE;
+        }
 
         $io->title('Plugins Install: ' . $plugin);
 

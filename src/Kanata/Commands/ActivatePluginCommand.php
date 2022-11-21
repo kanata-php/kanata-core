@@ -5,6 +5,7 @@ namespace Kanata\Commands;
 use Exception;
 use Kanata\Commands\Traits\LogoTrait;
 use Kanata\Commands\Traits\PluginHelpersTrait;
+use Kanata\Services\Helpers;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -34,6 +35,11 @@ class ActivatePluginCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         $this->writeLogo($output);
+
+        if (!Helpers::hasPluginsDbConnection()) {
+            $io->error('You must start Kanata first by running vendor/bin/start-kanata');
+            return Command::FAILURE;
+        }
 
         $pluginName = $input->getArgument('plugin-name');
 
