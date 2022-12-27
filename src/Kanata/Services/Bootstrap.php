@@ -27,7 +27,6 @@ use Kanata\Commands\DeactivatePluginCommand;
 use Kanata\Commands\DebuggerCommand;
 use Kanata\Commands\InfoCommand;
 use Kanata\Commands\CreatePluginCommand;
-use Swoole\Timer;
 use Symfony\Component\Console\Application;
 use voku\helper\Hooks;
 
@@ -96,8 +95,6 @@ class Bootstrap
     public static function processCore(array $args = []): void
     {
         global $app, $container;
-
-        Timer::set(['enable_coroutine' => true]);
 
         Autoloader::startEnv();
         Autoloader::startConstants();
