@@ -1,6 +1,12 @@
 
 # Change Log
 
+## [0.8.11] - 2023-01-15
+
+### Added
+
+- Fixed persistence layer with latest conveyor version.
+
 ## [0.8.10] - 2023-01-15
 
 ### Added
