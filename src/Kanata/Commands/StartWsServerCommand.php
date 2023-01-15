@@ -63,6 +63,12 @@ class StartWsServerCommand extends Command
         $listenerPersistence = ws_listener_persistence();
         $persistence = [$channelPersistence, $userAssocPersistence, $listenerPersistence];
 
+        // refresh persistence
+        new SocketMessageRouter(
+            persistence: $persistence,
+            fresh: true,
+        );
+
         $communications = socket_communication();
 
         $port = $input->getOption(WEBSOCKET_PORT_PARAM);
