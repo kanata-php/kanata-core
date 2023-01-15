@@ -1,6 +1,48 @@
 
 # Change Log
 
+## [0.8.10] - 2023-01-15
+
+### Added
+
+- Added refresh to ws server.
+
+## [0.8.9] - 2023-01-14
+
+### Added
+
+- Updated dependencies.
+
+## [0.8.8] - 2022-01-07
+
+### Added
+
+- Updated dependencies.
+
+## [0.8.7] - 2022-01-07
+
+### Added
+
+- Updated dependencies.
+
+## [0.8.5] - 2022-12-27
+
+### Fixed
+
+- Updated socket conveyor.
+
+## [0.8.4] - 2022-12-26
+
+### Added
+
+- Removed deprecated timer call.
+
+## [0.8.3] - 2022-11-20
+
+### Removed
+
+- Unnecessary dependencies.
+
 ## [0.8.2] - 2022-11-20
 
 ### Added
