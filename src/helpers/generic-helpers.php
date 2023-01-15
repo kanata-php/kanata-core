@@ -7,7 +7,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use voku\helper\Hooks;
-use Swoole\Process;
+use OpenSwoole\Process;
 
 if (! function_exists('container')) {
     /**

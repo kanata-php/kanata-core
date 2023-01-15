@@ -6,8 +6,8 @@ namespace Tests\Unit;
 
 use Co\System;
 use PHPUnit\Framework\TestCase;
-use Swoole\Process;
-use Swoole\Table;
+use OpenSwoole\Process;
+use OpenSwoole\Table;
 use Tests\Samples\SampleEvent;
 
 final class EventsTest extends TestCase

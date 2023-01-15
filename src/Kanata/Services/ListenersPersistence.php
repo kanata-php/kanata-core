@@ -92,4 +92,9 @@ class ListenersPersistence implements ListenerPersistenceInterface
 
         return false;
     }
+
+    public function refresh(): void
+    {
+        WsListener::truncate();
+    }
 }

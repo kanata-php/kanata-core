@@ -50,4 +50,9 @@ class ChannelsPersistence implements ChannelPersistenceInterface
 
         return $connections;
     }
+
+    public function refresh(): void
+    {
+        WsChannel::truncate();
+    }
 }

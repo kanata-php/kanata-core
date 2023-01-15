@@ -3,7 +3,7 @@
 namespace Kanata\Services;
 
 use Kanata\Interfaces\EventInterface;
-use Swoole\Timer;
+use OpenSwoole\Timer;
 
 class Events
 {

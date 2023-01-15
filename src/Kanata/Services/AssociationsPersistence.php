@@ -79,4 +79,9 @@ class AssociationsPersistence implements UserAssocPersistenceInterface
 
         return $connections;
     }
+
+    public function refresh(): void
+    {
+        WsAssociation::truncate();
+    }
 }

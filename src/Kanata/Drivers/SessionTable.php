@@ -4,7 +4,7 @@ namespace Kanata\Drivers;
 
 use Carbon\Carbon;
 use Psr\SimpleCache\CacheInterface;
-use Swoole\Table;
+use OpenSwoole\Table;
 use Psr\SimpleCache\InvalidArgumentException;
 
 class SessionTable implements CacheInterface

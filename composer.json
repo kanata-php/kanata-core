@@ -56,7 +56,8 @@
         "phpunit/phpunit": "^9.2",
         "codedungeon/phpunit-result-printer": "^0.30",
         "fakerphp/faker": "^1.19",
-        "mockery/mockery": "^1.5"
+        "mockery/mockery": "^1.5",
+        "openswoole/ide-helper": "^22.0"
     },
     "config": {
         "allow-plugins": {
@@ -64,8 +65,7 @@
         }
     },
     "suggest": {
-        "ext-openswoole": "This package requires at least one of Open Swoole or Swoole",
-        "ext-swoole": "This package requires at least one of Open Swoole or Swoole"
+        "ext-openswoole": "This package requires at least one of Open Swoole or Swoole"
     },
     "scripts": {
         "test": "./vendor/bin/phpunit"

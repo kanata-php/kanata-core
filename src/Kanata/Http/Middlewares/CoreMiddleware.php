@@ -7,8 +7,8 @@ use Kanata\Http\Middlewares\Interfaces\HttpMiddlewareInterface;
 use League\Pipeline\Pipeline;
 use League\Pipeline\PipelineBuilder;
 use League\Pipeline\PipelineInterface;
-use Swoole\Http\Request;
-use Swoole\Http\Response;
+use OpenSwoole\Http\Request;
+use OpenSwoole\Http\Response;
 use voku\helper\Hooks;
 
 /**
