@@ -23,6 +23,13 @@ class ShellCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $script = $input->getArgument('script');
+
+        if (null !== $input->getArgument('script')) {
+            eval($script);
+            return Command::SUCCESS;
+        }
+
         container()->set('context', 'shell');
         container()->set('input', $input);
         container()->set('output', $output);
