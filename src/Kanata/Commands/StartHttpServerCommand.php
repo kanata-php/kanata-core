@@ -10,7 +10,6 @@ use Kanata\Exceptions\UnauthorizedException;
 use Kanata\Http\Middlewares\CoreMiddleware;
 use Kanata\Services\Routes;
 use Nyholm\Psr7\Factory\Psr17Factory;
-use Slim\Exception\HttpNotFoundException;
 use OpenSwoole\Http\Request;
 use OpenSwoole\Http\Response;
 use OpenSwoole\Http\Server;
@@ -62,7 +61,7 @@ class StartHttpServerCommand extends Command
          */
         $server_mode = Hooks::getInstance()->apply_filters(
             'http_mode',
-            SWOOLE_PROCESS
+            SWOOLE_PROCESS,
         );
 
         /**
@@ -73,7 +72,7 @@ class StartHttpServerCommand extends Command
          */
         $http_document_root = Hooks::getInstance()->apply_filters(
             'http_document_root',
-            public_path()
+            dist_path(),
         );
 
         $server_settings = [
@@ -86,7 +85,7 @@ class StartHttpServerCommand extends Command
                 HTTP_SERVER_HOST,
                 $input->getOption(HTTP_PORT_PARAM),
                 $server_mode,
-                SWOOLE_SOCK_TCP | SWOOLE_SSL
+                SWOOLE_SOCK_TCP | SWOOLE_SSL,
             );
 
             $server_settings = array_merge($server_settings, [
@@ -98,7 +97,7 @@ class StartHttpServerCommand extends Command
                 HTTP_SERVER_HOST,
                 $input->getOption(HTTP_PORT_PARAM),
                 $server_mode,
-                SWOOLE_SOCK_TCP
+                SWOOLE_SOCK_TCP,
             );
         }
 

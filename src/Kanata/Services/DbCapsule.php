@@ -1,6 +1,6 @@
 <?php
 
-namespace Kanata\Drivers;
+namespace Kanata\Services;
 
 use Illuminate\Database\Capsule\Manager;
 

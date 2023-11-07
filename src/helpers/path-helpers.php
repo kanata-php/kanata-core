@@ -46,6 +46,20 @@ if (! function_exists('public_path')) {
     }
 }
 
+if (! function_exists('dist_path')) {
+    /**
+     * Retrieve dist path of the project.
+     *
+     * @param string $asset
+     * @return string
+     */
+    function dist_path(string $asset = ''): string
+    {
+        $string = base_path() . 'dist' . DIRECTORY_SEPARATOR . $asset;
+        return trailingslashit($string);
+    }
+}
+
 if (! function_exists('resource_path')) {
     /**
      * Retrieve resources path of the project.

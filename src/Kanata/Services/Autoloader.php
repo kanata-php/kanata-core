@@ -31,7 +31,7 @@ class Autoloader
 
     public static function startPlugins(): void
     {
-        /** @var \Kanata\Drivers\DbCapsule $connection */
+        /** @var \Kanata\Services\DbCapsule $connection */
         $connection = container()->db;
         $pluginLoader = new PluginLoader(container());
         $pluginLoader->load();

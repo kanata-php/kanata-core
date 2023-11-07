@@ -3,17 +3,16 @@
 namespace Kanata\Services;
 
 use GuzzleHttp\Client;
-use Kanata\Drivers\DbCapsule;
 use Kanata\Repositories\PluginRepository;
 use KanataPlugin\KanataPlugin;
 use League\Flysystem\Adapter\Local;
+use League\Flysystem\Filesystem as Flysystem;
 use League\Plates\Engine;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
-use League\Flysystem\Filesystem as Flysystem;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
-use voku\helper\Hooks;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use voku\helper\Hooks;
 
 class Dependencies
 {
